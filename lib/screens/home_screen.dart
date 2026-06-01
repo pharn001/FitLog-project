@@ -1,314 +1,188 @@
 // home_screen.dart
 //
 // The Home screen serves as the primary landing page of FitLog.
-// It displays summary statistics (total workouts and total calories burned)
-// using styled stat cards arranged in a Row / Column layout.
-// A BottomNavigationBar provides navigation to the History, Home, and
-// Settings screens.
-//
-// This is a StatelessWidget because the summary data is passed in as static
-// seed data and does not change within this widget's lifecycle.
+// Displays a streak widget, summary statistics, and recent workouts.
+// All data is driven by BLoC state rather than hardcoded values.
 
 import 'package:flutter/material.dart';
-import '../models/workout.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import '../blocs/workout/workout_bloc.dart';
+import '../blocs/workout/workout_state.dart';
+import '../router/app_router.dart';
+import '../theme/app_colors.dart';
+import '../widgets/stat_card.dart';
+import '../widgets/streak_widget.dart';
+import '../widgets/workout_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // ------------------------------------------------------------------
-    // Seed data – used for summary statistics on the Home screen.
-    // In a production app this would come from a database or state manager.
-    // ------------------------------------------------------------------
-    final List<Workout> workouts = const [
-      Workout(
-        name: 'Morning Run',
-        duration: 30,
-        calories: 300,
-        date: '2026-05-28',
-        type: 'Running',
-        notes: 'Felt great, steady pace throughout.',
-      ),
-      Workout(
-        name: 'Weight Training',
-        duration: 45,
-        calories: 400,
-        date: '2026-05-27',
-        type: 'Weight Training',
-        notes: 'Upper body focus – bench, rows, OHP.',
-      ),
-      Workout(
-        name: 'Evening Swim',
-        duration: 60,
-        calories: 500,
-        date: '2026-05-26',
-        type: 'Swimming',
-      ),
-      Workout(
-        name: 'Cycling Session',
-        duration: 50,
-        calories: 450,
-        date: '2026-05-25',
-        type: 'Cycling',
-        notes: 'Hill intervals.',
-      ),
-      Workout(
-        name: 'Yoga Flow',
-        duration: 40,
-        calories: 200,
-        date: '2026-05-24',
-        type: 'Yoga',
-      ),
-    ];
-
-    // Compute summary metrics.
-    final int totalWorkouts = workouts.length;
-    final int totalCalories =
-        workouts.fold<int>(0, (sum, w) => sum + w.calories);
-    final int totalMinutes =
-        workouts.fold<int>(0, (sum, w) => sum + w.duration);
-
     return Scaffold(
-      // ------------------------------------------------------------------
-      // AppBar
-      // ------------------------------------------------------------------
       appBar: AppBar(
-        title: const Text(
-          'FitLog',
-          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
-        ),
-        centerTitle: true,
-        elevation: 0,
+        title: const Text('FitLog'),
       ),
-
-      // ------------------------------------------------------------------
-      // Body – summary cards laid out with Column + Row
-      // ------------------------------------------------------------------
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Greeting section
-            Text(
-              'Welcome back! 💪',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal.shade800,
-                  ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Here\'s your workout summary',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
-            ),
-            const SizedBox(height: 24),
-
-            // ------- Top stat cards row -------
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    icon: Icons.fitness_center,
-                    label: 'Total Workouts',
-                    value: '$totalWorkouts',
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF00897B), Color(0xFF4DB6AC)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _StatCard(
-                    icon: Icons.local_fire_department,
-                    label: 'Calories Burned',
-                    value: '$totalCalories kcal',
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFEF6C00), Color(0xFFFFB74D)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // ------- Bottom stat card (full width) -------
-            _StatCard(
-              icon: Icons.timer,
-              label: 'Total Minutes',
-              value: '$totalMinutes min',
-              gradient: const LinearGradient(
-                colors: [Color(0xFF5C6BC0), Color(0xFF9FA8DA)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            // ------- Recent workouts preview -------
-            Text(
-              'Recent Workouts',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            ...workouts.take(3).map(
-                  (w) => Card(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 2,
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.teal.shade50,
-                        child: Icon(
-                          _iconForType(w.type),
-                          color: Colors.teal,
-                        ),
-                      ),
-                      title: Text(
-                        w.name,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text(w.date),
-                      trailing: Text(
-                        '${w.calories} kcal',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange.shade700,
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.pushNamed(context, '/detail', arguments: w);
-                      },
-                    ),
-                  ),
-                ),
-          ],
-        ),
-      ),
-
-      // ------------------------------------------------------------------
-      // BottomNavigationBar – 3 tabs: History, Home, Settings
-      // ------------------------------------------------------------------
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1, // Home is the middle tab
-        selectedItemColor: Colors.teal,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/history');
-              break;
-            case 1:
-              // Already on home – do nothing.
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/settings');
-              break;
+      body: BlocBuilder<WorkoutBloc, WorkoutState>(
+        builder: (context, state) {
+          if (state is WorkoutLoading) {
+            return const Center(child: CircularProgressIndicator());
           }
+
+          if (state is WorkoutError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.error_outline, size: 48, color: Colors.red.shade300),
+                  const SizedBox(height: 12),
+                  Text('Error: ${state.message}'),
+                ],
+              ),
+            );
+          }
+
+          if (state is WorkoutLoaded) {
+            return _HomeBody(state: state);
+          }
+
+          return const SizedBox.shrink();
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
       ),
     );
   }
-
-  // Helper – returns an icon based on the workout type.
-  static IconData _iconForType(String type) {
-    switch (type) {
-      case 'Running':
-        return Icons.directions_run;
-      case 'Weight Training':
-        return Icons.fitness_center;
-      case 'Swimming':
-        return Icons.pool;
-      case 'Cycling':
-        return Icons.directions_bike;
-      case 'Yoga':
-        return Icons.self_improvement;
-      default:
-        return Icons.sports;
-    }
-  }
 }
 
-// ---------------------------------------------------------------------------
-// _StatCard — a reusable card widget for displaying a single summary stat.
-// Uses Container with BoxDecoration for gradient backgrounds and rounded
-// corners.
-// ---------------------------------------------------------------------------
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Gradient gradient;
-
-  const _StatCard({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.gradient,
-  });
+class _HomeBody extends StatelessWidget {
+  final WorkoutLoaded state;
+  const _HomeBody({required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.10),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white, size: 28),
-          const SizedBox(height: 12),
+          // ── Greeting ───────────────────────────────────────────────
           Text(
-            value,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+            'Welcome back! 💪',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? AppColors.primaryLight : AppColors.primaryDark,
+                ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Here\'s your workout summary',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+          ),
+          const SizedBox(height: 20),
+
+          // ── Streak Widget ──────────────────────────────────────────
+          const StreakWidget(),
+          const SizedBox(height: 24),
+
+          // ── Stat Cards Row ─────────────────────────────────────────
+          Row(
+            children: [
+              Expanded(
+                child: StatCard(
+                  icon: Icons.fitness_center,
+                  label: 'Total Workouts',
+                  value: '${state.totalWorkouts}',
+                  gradient: const LinearGradient(
+                    colors: AppColors.tealGradient,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: StatCard(
+                  icon: Icons.local_fire_department,
+                  label: 'Calories Burned',
+                  value: '${state.totalCalories} kcal',
+                  gradient: const LinearGradient(
+                    colors: AppColors.orangeGradient,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          StatCard(
+            icon: Icons.timer,
+            label: 'Total Minutes',
+            value: '${state.totalMinutes} min',
+            gradient: const LinearGradient(
+              colors: AppColors.indigoGradient,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.85),
-            ),
+
+          const SizedBox(height: 28),
+
+          // ── Recent Workouts ────────────────────────────────────────
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Recent Workouts',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              TextButton(
+                onPressed: () => context.go(AppRoutes.history),
+                child: Text(
+                  'ເບິ່ງທັງໝົດ',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: 8),
+
+          if (state.allWorkouts.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    Icon(Icons.fitness_center,
+                        size: 48, color: Colors.grey.shade300),
+                    const SizedBox(height: 12),
+                    Text(
+                      'ຍັງບໍ່ມີ Workout\nກົດປຸ່ມ + ເພື່ອເພີ່ມ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey.shade500),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            ...state.recentWorkouts(3).map(
+                  (w) => WorkoutCard(
+                    workout: w,
+                    onTap: () =>
+                        context.push('${AppRoutes.detail}/${w.id}'),
+                  ),
+                ),
         ],
       ),
     );

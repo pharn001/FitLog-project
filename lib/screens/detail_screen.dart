@@ -1,84 +1,141 @@
 // detail_screen.dart
 //
-// Displays the full details of a single [Workout] that was passed as a
-// route argument. A Stack-based header banner shows the workout name and
-// type over a gradient, while a Column below lists every field.
-//
-// This is a StatelessWidget because it only reads data passed via the
-// route arguments and does not manage any mutable state.
+// Displays the full details of a single [Workout] loaded by its ID.
+// Provides Edit and Delete actions in the AppBar.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import '../blocs/workout/workout_bloc.dart';
+import '../blocs/workout/workout_event.dart';
+import '../blocs/workout/workout_state.dart';
+import '../blocs/streak/streak_bloc.dart';
+import '../blocs/streak/streak_event.dart';
 import '../models/workout.dart';
+import '../router/app_router.dart';
+import '../theme/app_colors.dart';
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key});
+  final int workoutId;
 
-  // Helper – returns an icon based on the workout type.
-  static IconData _iconForType(String type) {
-    switch (type) {
-      case 'Running':
-        return Icons.directions_run;
-      case 'Weight Training':
-        return Icons.fitness_center;
-      case 'Swimming':
-        return Icons.pool;
-      case 'Cycling':
-        return Icons.directions_bike;
-      case 'Yoga':
-        return Icons.self_improvement;
-      default:
-        return Icons.sports;
+  const DetailScreen({super.key, required this.workoutId});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WorkoutBloc, WorkoutState>(
+      builder: (context, state) {
+        if (state is! WorkoutLoaded) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Workout Detail')),
+            body: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final workout = state.allWorkouts
+            .where((w) => w.id == workoutId)
+            .firstOrNull;
+
+        if (workout == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Workout Detail')),
+            body: const Center(child: Text('Workout not found')),
+          );
+        }
+
+        return _DetailBody(workout: workout);
+      },
+    );
+  }
+}
+
+class _DetailBody extends StatelessWidget {
+  final Workout workout;
+  const _DetailBody({required this.workout});
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('ລຶບ Workout?'),
+        content: Text('ເຈົ້າຕ້ອງການລຶບ "${workout.name}" ຫຼືບໍ່?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ຍົກເລີກ'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('ລຶບ'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      context.read<WorkoutBloc>().add(DeleteWorkout(workout.id));
+      context.read<StreakBloc>().add(const LoadStreak());
+      context.pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('"${workout.name}" ຖືກລຶບແລ້ວ'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve the Workout object passed via Navigator arguments.
-    final workout =
-        ModalRoute.of(context)!.settings.arguments as Workout;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final typeColor = AppColors.colorForType(workout.type);
 
     return Scaffold(
-      // AppBar with title
       appBar: AppBar(
-        title: const Text(
-          'Workout Detail',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 0,
+        title: const Text('Workout Detail'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: 'ແກ້ໄຂ',
+            onPressed: () =>
+                context.push('${AppRoutes.edit}/${workout.id}'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'ລຶບ',
+            onPressed: () => _confirmDelete(context),
+          ),
+        ],
       ),
-
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ----------------------------------------------------------
-            // Header banner using Stack for layered layout
-            // ----------------------------------------------------------
+            // ── Header banner ────────────────────────────────────
             Stack(
               children: [
-                // Background gradient container
                 Container(
                   height: 200,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0xFF00897B), Color(0xFF4DB6AC)],
+                      colors: isDark
+                          ? [typeColor.withValues(alpha: 0.4), typeColor.withValues(alpha: 0.15)]
+                          : [typeColor, typeColor.withValues(alpha: 0.6)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(32),
                       bottomRight: Radius.circular(32),
                     ),
                   ),
                 ),
-                // Foreground content positioned on top of the gradient
                 Positioned.fill(
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Workout type icon
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -86,13 +143,12 @@ class DetailScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            _iconForType(workout.type),
+                            AppColors.iconForType(workout.type),
                             size: 48,
                             color: Colors.white,
                           ),
                         ),
                         const SizedBox(height: 12),
-                        // Workout name
                         Text(
                           workout.name,
                           style: const TextStyle(
@@ -102,12 +158,9 @@ class DetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        // Workout type badge
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 4,
-                          ),
+                              horizontal: 14, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.25),
                             borderRadius: BorderRadius.circular(20),
@@ -127,17 +180,13 @@ class DetailScreen extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 24),
 
-            // ----------------------------------------------------------
-            // Detail cards
-            // ----------------------------------------------------------
+            // ── Detail cards ─────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  // Quick stats row
                   Row(
                     children: [
                       Expanded(
@@ -159,25 +208,18 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Date card
                   _DetailRow(
                     icon: Icons.calendar_today,
                     label: 'Date',
-                    value: workout.date,
+                    value: workout.formattedDate,
                   ),
-
                   const SizedBox(height: 12),
-
-                  // Notes card
                   _DetailRow(
                     icon: Icons.notes,
                     label: 'Notes',
                     value: workout.notes ?? 'No notes for this workout.',
                   ),
-
                   const SizedBox(height: 32),
                 ],
               ),
@@ -189,9 +231,6 @@ class DetailScreen extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// _QuickStatCard — compact stat card used in the top row of the detail view.
-// ---------------------------------------------------------------------------
 class _QuickStatCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -207,12 +246,13 @@ class _QuickStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withValues(alpha: isDark ? 0.15 : 0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
+        border: Border.all(color: color.withValues(alpha: isDark ? 0.25 : 0.15)),
       ),
       child: Column(
         children: [
@@ -229,7 +269,9 @@ class _QuickStatCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             label,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            style: TextStyle(
+                fontSize: 12,
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
           ),
         ],
       ),
@@ -237,9 +279,6 @@ class _QuickStatCard extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// _DetailRow — a labeled row showing a single piece of workout information.
-// ---------------------------------------------------------------------------
 class _DetailRow extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -253,17 +292,19 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: isDark ? AppColors.darkCard : Colors.grey.shade50,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(
+            color: isDark ? AppColors.darkDivider : Colors.grey.shade200),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.teal, size: 22),
+          Icon(icon, color: AppColors.primary, size: 22),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -273,15 +314,12 @@ class _DetailRow extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade500,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(fontSize: 15),
-                ),
+                Text(value, style: const TextStyle(fontSize: 15)),
               ],
             ),
           ),

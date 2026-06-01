@@ -1,38 +1,41 @@
 // add_workout_screen.dart
 //
 // A form-driven screen that lets the user create a new [Workout].
-// It uses a [Form] widget with a [GlobalKey<FormState>] to validate all
-// fields before saving. On successful validation the new workout is
-// returned to the previous screen via [Navigator.pop].
-//
-// This is a StatefulWidget because it manages form field controllers and
-// the selected workout type, which are mutable state.
+// Saves via WorkoutBloc and optionally accepts an initial duration
+// from the Timer screen.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import '../blocs/workout/workout_bloc.dart';
+import '../blocs/workout/workout_event.dart';
+import '../blocs/streak/streak_bloc.dart';
+import '../blocs/streak/streak_event.dart';
 import '../models/workout.dart';
+import '../router/app_router.dart';
+import '../theme/app_colors.dart';
 
 class AddWorkoutScreen extends StatefulWidget {
-  const AddWorkoutScreen({super.key});
+  final int? initialDuration;
+
+  const AddWorkoutScreen({super.key, this.initialDuration});
 
   @override
   State<AddWorkoutScreen> createState() => _AddWorkoutScreenState();
 }
 
 class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
-  // Global key used to validate and save the form.
   final _formKey = GlobalKey<FormState>();
-
-  // Controllers for each text field.
   final _nameController = TextEditingController();
   final _durationController = TextEditingController();
   final _caloriesController = TextEditingController();
   final _dateController = TextEditingController();
   final _notesController = TextEditingController();
 
-  // The currently selected workout type (dropdown).
   String _selectedType = 'Running';
+  DateTime? _selectedDate;
 
-  // Available workout types.
   static const List<String> _workoutTypes = [
     'Running',
     'Weight Training',
@@ -44,8 +47,18 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.initialDuration != null) {
+      _durationController.text = widget.initialDuration.toString();
+    }
+    // Default to today
+    _selectedDate = DateTime.now();
+    _dateController.text = _formatDate(_selectedDate!);
+  }
+
+  @override
   void dispose() {
-    // Clean up controllers when the widget is removed from the tree.
     _nameController.dispose();
     _durationController.dispose();
     _caloriesController.dispose();
@@ -54,41 +67,71 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
     super.dispose();
   }
 
-  // ------------------------------------------------------------------
-  // Date picker helper – opens a Material date picker and fills the field.
-  // ------------------------------------------------------------------
+  String _formatDate(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
   Future<void> _pickDate() async {
     final now = DateTime.now();
     final picked = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: _selectedDate ?? now,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
     );
     if (picked != null) {
       setState(() {
-        _dateController.text =
-            '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+        _selectedDate = picked;
+        _dateController.text = _formatDate(picked);
       });
     }
   }
 
-  // ------------------------------------------------------------------
-  // Build
-  // ------------------------------------------------------------------
+  void _save() {
+    if (_formKey.currentState!.validate()) {
+      final newWorkout = Workout(
+        name: _nameController.text.trim(),
+        duration: int.parse(_durationController.text.trim()),
+        calories: int.parse(_caloriesController.text.trim()),
+        date: _selectedDate ?? DateTime.now(),
+        type: _selectedType,
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
+      );
+
+      context.read<WorkoutBloc>().add(AddWorkout(newWorkout));
+      context.read<StreakBloc>().add(const LoadStreak());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('"${newWorkout.name}" ບັນທຶກແລ້ວ!'),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.primary,
+        ),
+      );
+
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Workout',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: const Text('Add Workout'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => context.pop(),
         ),
-        centerTitle: true,
-        elevation: 0,
+        actions: [
+          // Timer shortcut
+          IconButton(
+            icon: const Icon(Icons.timer),
+            tooltip: 'Workout Timer',
+            onPressed: () => context.push(AppRoutes.timer),
+          ),
+        ],
       ),
-
-      // SingleChildScrollView prevents overflow when the keyboard appears.
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -96,18 +139,19 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ---------- Header ----------
+              // ── Header ──────────────────────────────────────────
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF00897B), Color(0xFF4DB6AC)],
+                    colors: AppColors.tealGradient,
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.add_circle_outline, color: Colors.white, size: 32),
+                    Icon(Icons.add_circle_outline,
+                        color: Colors.white, size: 32),
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -124,16 +168,13 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
               ),
               const SizedBox(height: 24),
 
-              // ---------- Workout Name ----------
+              // ── Workout Name ────────────────────────────────────
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Workout Name',
                   hintText: 'e.g. Morning Run',
-                  prefixIcon: const Icon(Icons.fitness_center),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  prefixIcon: Icon(Icons.fitness_center),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -144,45 +185,45 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
               ),
               const SizedBox(height: 16),
 
-              // ---------- Workout Type dropdown ----------
+              // ── Workout Type ────────────────────────────────────
               DropdownButtonFormField<String>(
                 initialValue: _selectedType,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Workout Type',
-                  prefixIcon: const Icon(Icons.category),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  prefixIcon: Icon(Icons.category),
                 ),
                 items: _workoutTypes
                     .map((type) => DropdownMenuItem(
                           value: type,
-                          child: Text(type),
+                          child: Row(
+                            children: [
+                              Icon(AppColors.iconForType(type),
+                                  size: 20,
+                                  color: AppColors.colorForType(type)),
+                              const SizedBox(width: 10),
+                              Text(type),
+                            ],
+                          ),
                         ))
                     .toList(),
                 onChanged: (value) {
                   if (value != null) {
-                    setState(() {
-                      _selectedType = value;
-                    });
+                    setState(() => _selectedType = value);
                   }
                 },
               ),
               const SizedBox(height: 16),
 
-              // ---------- Duration & Calories (side by side) ----------
+              // ── Duration & Calories ─────────────────────────────
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _durationController,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Duration (min)',
-                        prefixIcon: const Icon(Icons.timer),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        prefixIcon: Icon(Icons.timer),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -200,12 +241,9 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                     child: TextFormField(
                       controller: _caloriesController,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Calories',
-                        prefixIcon: const Icon(Icons.local_fire_department),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        prefixIcon: Icon(Icons.local_fire_department),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -222,17 +260,14 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
               ),
               const SizedBox(height: 16),
 
-              // ---------- Date ----------
+              // ── Date ────────────────────────────────────────────
               TextFormField(
                 controller: _dateController,
                 readOnly: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Date',
                   hintText: 'YYYY-MM-DD',
-                  prefixIcon: const Icon(Icons.calendar_today),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  prefixIcon: Icon(Icons.calendar_today),
                 ),
                 onTap: _pickDate,
                 validator: (value) {
@@ -244,57 +279,28 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
               ),
               const SizedBox(height: 16),
 
-              // ---------- Notes (optional) ----------
+              // ── Notes ───────────────────────────────────────────
               TextFormField(
                 controller: _notesController,
                 maxLines: 3,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Notes (optional)',
                   hintText: 'Any additional info…',
-                  prefixIcon: const Padding(
+                  prefixIcon: Padding(
                     padding: EdgeInsets.only(bottom: 48),
                     child: Icon(Icons.notes),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
               const SizedBox(height: 28),
 
-              // ---------- Save button ----------
+              // ── Save button ─────────────────────────────────────
               SizedBox(
                 height: 52,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Validate all form fields.
-                    if (_formKey.currentState!.validate()) {
-                      // Build the new Workout and pop it back.
-                      final newWorkout = Workout(
-                        name: _nameController.text.trim(),
-                        duration: int.parse(_durationController.text.trim()),
-                        calories: int.parse(_caloriesController.text.trim()),
-                        date: _dateController.text.trim(),
-                        type: _selectedType,
-                        notes: _notesController.text.trim().isEmpty
-                            ? null
-                            : _notesController.text.trim(),
-                      );
-                      Navigator.pop(context, newWorkout);
-                    }
-                  },
+                  onPressed: _save,
                   icon: const Icon(Icons.save),
-                  label: const Text(
-                    'Save Workout',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
+                  label: const Text('Save Workout'),
                 ),
               ),
             ],
