@@ -132,6 +132,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: 'HinsiewLAO',
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.darkBackground,
 
