@@ -13,6 +13,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'models/workout.dart';
+import 'models/user_profile.dart';
 import 'repositories/workout_repository.dart';
 import 'blocs/workout/workout_bloc.dart';
 import 'blocs/workout/workout_event.dart';
@@ -22,6 +23,8 @@ import 'blocs/theme/theme_state.dart';
 import 'blocs/streak/streak_bloc.dart';
 import 'blocs/streak/streak_event.dart';
 import 'blocs/timer/timer_bloc.dart';
+import 'blocs/profile/profile_bloc.dart';
+import 'blocs/profile/profile_event.dart';
 import 'theme/app_theme.dart';
 import 'router/app_router.dart';
 
@@ -31,7 +34,7 @@ Future<void> main() async {
   // Open Isar database
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open(
-    [WorkoutSchema],
+    [WorkoutSchema, UserProfileSchema],
     directory: dir.path,
   );
 
@@ -43,7 +46,7 @@ Future<void> main() async {
 
   final repository = WorkoutRepository(isar);
 
-  runApp(FitLogApp(repository: repository));
+  runApp(FitLogApp(repository: repository, isar: isar));
 }
 
 /// Seeds the database with sample workouts for first-time users.
@@ -116,30 +119,40 @@ Future<void> _seedData(Isar isar) async {
 /// Root widget of the FitLog application.
 class FitLogApp extends StatelessWidget {
   final WorkoutRepository repository;
+  final Isar? isar;
 
-  const FitLogApp({super.key, required this.repository});
+  const FitLogApp({
+    super.key,
+    required this.repository,
+    this.isar,
+  });
 
   @override
   Widget build(BuildContext context) {
     final router = createRouter();
 
+    final providers = [
+      BlocProvider<WorkoutBloc>(
+        create: (_) => WorkoutBloc(repository: repository)
+          ..add(const LoadWorkouts()),
+      ),
+      BlocProvider<ThemeBloc>(
+        create: (_) => ThemeBloc()..add(const LoadTheme()),
+      ),
+      BlocProvider<StreakBloc>(
+        create: (_) => StreakBloc(repository: repository)
+          ..add(const LoadStreak()),
+      ),
+      BlocProvider<TimerBloc>(
+        create: (_) => TimerBloc(),
+      ),
+      BlocProvider<ProfileBloc>(
+        create: (_) => ProfileBloc(isar: isar)..add(const LoadProfile()),
+      ),
+    ];
+
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => WorkoutBloc(repository: repository)
-            ..add(const LoadWorkouts()),
-        ),
-        BlocProvider(
-          create: (_) => ThemeBloc()..add(const LoadTheme()),
-        ),
-        BlocProvider(
-          create: (_) => StreakBloc(repository: repository)
-            ..add(const LoadStreak()),
-        ),
-        BlocProvider(
-          create: (_) => TimerBloc(),
-        ),
-      ],
+      providers: providers,
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
           return MaterialApp.router(

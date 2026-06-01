@@ -9,6 +9,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../blocs/theme/theme_bloc.dart';
 import '../blocs/theme/theme_event.dart';
@@ -16,6 +17,9 @@ import '../blocs/theme/theme_state.dart';
 import '../blocs/streak/streak_bloc.dart';
 import '../blocs/streak/streak_event.dart';
 import '../blocs/streak/streak_state.dart';
+import '../blocs/profile/profile_bloc.dart';
+import '../blocs/profile/profile_state.dart';
+import '../router/app_router.dart';
 import '../theme/app_colors.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -97,29 +101,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             // ── User Profile ─────────────────────────────────────
             Center(
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 48,
-                    backgroundColor:
-                        isDark ? AppColors.primaryDark : AppColors.primaryLight,
-                    child:
-                        const Icon(Icons.person, size: 48, color: Colors.white),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'FitLog User',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'fitlog_user@example.com',
-                    style: TextStyle(
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600),
-                  ),
-                ],
+              child: BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, state) {
+                  String profileSub = 'ຍັງບໍ່ທັນໄດ້ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ';
+                  bool hasProfile = false;
+
+                  if (state is ProfileLoaded) {
+                    hasProfile = true;
+                    final p = state.profile;
+                    profileSub = 'ສ່ວນສູງ: ${p.height.round()} ຊມ. | ນ້ຳໜັກ: ${p.weight.round()} ກກ. | BMI: ${p.bmi.toStringAsFixed(1)}';
+                  }
+
+                  return Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 48,
+                        backgroundColor:
+                            isDark ? AppColors.primaryDark : AppColors.primaryLight,
+                        child:
+                            const Icon(Icons.person, size: 48, color: Colors.white),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'FitLog User',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        profileSub,
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade600),
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        onPressed: () => context.push(AppRoutes.profileSetup),
+                        icon: Icon(
+                          hasProfile ? Icons.edit_note : Icons.add_moderator,
+                          size: 18,
+                        ),
+                        label: Text(hasProfile ? 'ແກ້ໄຂຂໍ້ມູນຮ່າງກາຍ' : 'ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                          foregroundColor: AppColors.primary,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
             const SizedBox(height: 28),
@@ -145,7 +182,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       child: const Icon(Icons.flag, color: AppColors.primary),
                     ),
-                    title: const Text('ໄລຍะເວລາອອກກຳລັງກາຍ'),
+                    title: const Text('ໄລຍະເວລາອອກກຳລັງກາຍ'),
                     subtitle: Text(
                         '${streakState.dailyGoalMinutes} ນາທີ / ວັນ'),
                     trailing: IconButton(

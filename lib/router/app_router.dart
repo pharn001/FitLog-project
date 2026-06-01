@@ -15,6 +15,7 @@ import '../screens/add_workout_screen.dart';
 import '../screens/edit_workout_screen.dart';
 import '../screens/detail_screen.dart';
 import '../screens/timer_screen.dart';
+import '../screens/profile_setup_screen.dart';
 
 /// Named route paths.
 class AppRoutes {
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String edit = '/edit'; // /edit/:id
   static const String detail = '/detail'; // /detail/:id
   static const String timer = '/timer';
+  static const String profileSetup = '/profile-setup';
 }
 
 /// Creates and returns the [GoRouter] instance.
@@ -90,6 +92,10 @@ GoRouter createRouter() {
       GoRoute(
         path: AppRoutes.timer,
         builder: (context, state) => const TimerScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.profileSetup,
+        builder: (context, state) => const ProfileSetupScreen(),
       ),
     ],
   );

@@ -15,6 +15,9 @@ import '../theme/app_colors.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/streak_widget.dart';
 import '../widgets/workout_card.dart';
+import '../widgets/nutrition_summary_card.dart';
+import '../blocs/profile/profile_bloc.dart';
+import '../blocs/profile/profile_state.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -88,6 +91,32 @@ class _HomeBody extends StatelessWidget {
           // ── Streak Widget ──────────────────────────────────────────
           const StreakWidget(),
           const SizedBox(height: 24),
+
+          // ── Nutrition Card ─────────────────────────────────────────
+          BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoaded) {
+                return Column(
+                  children: [
+                    NutritionSummaryCard(
+                      profile: state.profile,
+                      onEditTap: () => context.push(AppRoutes.profileSetup),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                );
+              }
+              if (state is ProfileEmpty) {
+                return Column(
+                  children: [
+                    _buildSetupProfileBanner(context, isDark),
+                    const SizedBox(height: 24),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
 
           // ── Stat Cards Row ─────────────────────────────────────────
           Row(
@@ -183,6 +212,73 @@ class _HomeBody extends StatelessWidget {
                         context.push('${AppRoutes.detail}/${w.id}'),
                   ),
                 ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSetupProfileBanner(BuildContext context, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.primary, AppColors.primaryLight],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'ຕັ້ງເປົ້າໝາຍໂພຊະນາການຂອງທ່ານ 🎯',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'ປ້ອນນ້ຳໜັກ ສ່ວນສູງ ແລະ ເປົ້າໝາຍເພື່ອຄຳນວນແຄລໍຣີຕໍ່ວັນຂອງທ່ານ',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () => context.push(AppRoutes.profileSetup),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.primary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Icon(
+            Icons.spa,
+            color: Colors.white,
+            size: 64,
+          ),
         ],
       ),
     );
