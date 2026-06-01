@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitLog Product Handbook — ຄູ່ມືແນະນຳຜະລິດຕະພັນ ແລະ ຟັງຊັນ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff7043; /* Coral Orange accent to differentiate from the Teal book! */
+            --primary-light: #ffab91;
+            --primary-dark: #d84315;
+            --secondary: #009688;
+            --background: #fdfdfd;
+            --surface: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border: #edf2f7;
+            --code-bg: #f7fafc;
+            --font-family: 'Outfit', 'Noto Sans Lao', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(255, 112, 67, 0.1), 0 4px 6px -2px rgba(0,0,0,0.02);
+            --gradient: linear-gradient(135deg, #ff7043 0%, #ff8a65 100%);
+        }
+
+        [data-theme="dark"] {
+            --background: #0f0f12;
+            --surface: #17171c;
+            --text-main: #e2e8f0;
+            --text-muted: #a0aec0;
+            --border: #2d2d37;
+            --code-bg: #1e1e24;
+            --shadow: 0 4px 10px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background);
+            color: var(--text-main);
+            line-height: 1.8;
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        /* ── Header Branding ── */
+        .promo-header {
+            background: var(--gradient);
+            color: #ffffff;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .promo-header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -10%;
+            width: 120%;
+            height: 100px;
+            background-color: var(--background);
+            transform: rotate(-2deg);
+            transition: var(--transition);
+        }
+
+        .promo-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .promo-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ffffff;
+        }
+
+        /* ── Main Container ── */
+        .container {
+            max-width: 1000px;
+            margin: -30px auto 4rem auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background-color: var(--surface);
+            border-radius: 24px;
+            padding: 3.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        /* Controls block */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            background-color: rgba(255, 112, 67, 0.1);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-theme {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .btn-theme:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: var(--font-family);
+            color: var(--text-main);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.6rem;
+            margin-top: 3.5rem;
+        }
+
+        [data-theme="dark"] h1 {
+            color: var(--primary-light);
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            color: var(--secondary);
+            margin-top: 2rem;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            margin-top: 1.5rem;
+            color: var(--text-main);
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        [data-theme="dark"] strong {
+            color: var(--primary-light);
+        }
+
+        /* Interactive Steps (User Journey) */
+        .step-block {
+            display: flex;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--code-bg);
+            border-radius: 16px;
+            border-left: 5px solid var(--primary);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .step-block:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .step-num {
+            background: var(--gradient);
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(255, 112, 67, 0.3);
+        }
+
+        .step-content h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+        [data-theme="dark"] .step-content h3 {
+            color: var(--primary-light);
+        }
+
+        /* Matrix Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        th, td {
+            padding: 15px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--primary);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 112, 67, 0.02);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 112, 67, 0.05);
+        }
+
+        .badge-importance {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .importance-high {
+            background-color: rgba(239, 83, 80, 0.1);
+            color: #ef5350;
+        }
+
+        .importance-medium {
+            background-color: rgba(255, 167, 38, 0.1);
+            color: #ffa726;
+        }
+
+        .importance-low {
+            background-color: rgba(102, 187, 106, 0.1);
+            color: #66bb6a;
+        }
+
+        /* Alert boxes */
+        .alert {
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 16px;
+            border-left: 5px solid;
+            font-size: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .alert-info {
+            background-color: rgba(0, 150, 136, 0.08);
+            border-color: var(--secondary);
+            color: var(--text-main);
+        }
+
+        /* Lists */
+        ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.8rem;
+        }
+
+        li {
+            margin-bottom: 0.6rem;
+        }
+
+        /* Back to top button */
+        .btn-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary);
+            color: #ffffff;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .btn-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card {
+                padding: 1.8rem;
+                border-radius: 16px;
+            }
+            .promo-header h1 {
+                font-size: 1.8rem;
+            }
+            .step-block {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            th, td {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── HEADER HERO SECTION ── -->
+    <header class="promo-header">
+        <h1>📔 FitLog Product Handbook</h1>
+        <p>ຄູ່ມືແນະນຳຜະລິດຕະພັນ ແລະ ການວິເຄາະລາຍລະອຽດແຕ່ລະຟັງຊັນ</p>
+    </header>
+
+    <!-- ── MAIN CONTENT CONTAINER ── -->
+    <div class="container">
+        <div class="card">
+            
+            <div class="controls">
+                <span class="badge">🔥 Product Presentation Spec</span>
+                <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">
+                    🌙 Dark Mode
+                </button>
+            </div>
+
+            <!-- ── ສ່ວນທີ 1 ── -->
+            <h1>🎯 ສ່ວນທີ 1: ການແນະນຳແອັບພລິເຄຊັນ (App Introduction & Value Proposition)</h1>
+            
+            <h2>1.1 FitLog ແມ່ນຫຍັງ?</h2>
+            <p><strong>FitLog</strong> ບໍ່ແມ່ນພຽງແຕ່ແອັບບັນທຶກການອອກກຳລັງກາຍທົ່ວໄປ, ແຕ່ມັນຄື <strong>"ຄູ່ຫູສຸຂະພາບສ່ວນຕົວ (Personal Fitness Companion)"</strong> ທີ່ເຮັດວຽກແບບ Offline 100% ເພື່ອຄວາມເປັນສ່ວນຕົວຂອງຂໍ້ມູນ. ແອັບນີ້ຖືກພັດທະນາຂຶ້ນເພື່ອຕອບໂຈດຄົນຮັກສຸຂະພາບທີ່ຕ້ອງການຄວາມງ່າຍດາຍ ແຕ່ໄດ້ຮັບຂໍ້ມູນການວິເຄາະທີ່ຄົບຖ້ວນ ທັງດ້ານການອອກກຳລັງກາຍ ແລະ ໂພຊະນາການ.</p>
+
+            <h2>1.2 ບັນຫາທີ່ແອັບເຂົ້າມາແກ້ໄຂ (Problem-Solution Fit)</h2>
+            <ul>
+                <li><strong>ບັນຫາການຫຼົງລືມ ຫຼື ຂາດແຮງຈູງໃຈ:</strong> ລະບົບ <strong>Streak 🔥</strong> ຈະຄອຍກະຕຸ້ນໃຫ້ຜູ້ໃຊ້ອອກກຳລັງກາຍໃຫ້ບັນລຸເປົ້າໝາຍທຸກໆມື້.</li>
+                <li><strong>ຄວາມຫຍຸ້ງຍາກໃນການຄຳນວນ Macronutrients:</strong> ແອັບມີລະບົບ <strong>Smart Profile Calculator 🥗</strong> ທີ່ຊ່ວຍຄຳນວນປະລິມານການກິນແປ້ງ, ໂປຣຕີນ ແລະ ໄຂມັນໃຫ້ອັດຕະໂນມັດ ໂດຍບໍ່ຕ້ອງເພິ່ງພາຜູ້ຊ່ຽວຊານ.</li>
+                <li><strong>ການບໍ່ຮູ້ຄວາມກ້າວໜ້າຂອງຕົນເອງ:</strong> ລະບົບ <strong>Interactive Graphs 📊</strong> ປ່ຽນຂໍ້ມູນຕົວເລກທີ່ໜ້າເບື່ອໃຫ້ກາຍເປັນກຣາຟທີ່ເບິ່ງງ່າຍ ແລະ ສວຍງາມ.</li>
+            </ul>
+
+            <!-- ── ສ່ວນທີ 2 ── -->
+            <h1>🔄 ສ່ວນທີ 2: ຂັ້ນຕອນການໃຊ້ງານລະອຽດ (Step-by-Step User Guide)</h1>
+            <p>ການໃຊ້ງານ FitLog ຖືກອອກແບບມາໃຫ້ມີ <strong>User Journey (ເສັ້ນທາງການໃຊ້ງານ)</strong> ທີ່ສັ້ນ ແລະ ງ່າຍດາຍທີ່ສຸດ ໂດຍແບ່ງອອກເປັນ 4 ຂັ້ນຕອນຫຼັກ:</p>
+
+            <!-- Step 1 -->
+            <div class="step-block">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>ການເລີ່ມຕົ້ນສ້າງໂປຣໄຟລ໌ສຸຂະພາບ (First-Time Onboarding)</h3>
+                    <p>ໃນການໃຊ້ງານຄັ້ງທຳອິດ, ແອັບຈະພາຜູ້ໃຊ້ໄປຍັງໜ້າ <strong>Profile Setup</strong> ທັນທີ. ປ້ອນຂໍ້ມູນສ່ວນຕົວ: ເພດ, ອາຍຸ, ນ້ຳໜັກ, ສ່ວນສູງ, ລະດັບກິດຈະກຳ ແລະ ເປົ້າໝາຍ. ລະບົບຈະຄຳນວນຄ່າ BMR, TDEE ແລະ Macronutrients ທີ່ເໝາະສົມໃຫ້ທັນທີ.</p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-block">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>ການອອກກຳລັງກາຍ ແລະ ການບັນທຶກ (Workout & Logging Flow)</h3>
+                    <p>ຜູ້ໃຊ້ສາມາດບັນທຶກໄດ້ 2 ແບບ: <strong>ແບບຈັບເວລາຕົວຈິງ (Active Timer)</strong> ໂດຍກົດໄປແຖບ Timer ແລ້ວກົດ Start/Pause ເມື່ອສຳເລັດກົດ Save ລະບົບຈະສົ່ງເວລາໄປໜ້າ Add ອັດຕະໂນມັດ, ຫຼື <strong>ແບບບັນທຶກດ້ວຍມື (Manual Log)</strong> ໂດຍກົດປຸ່ມ FAB ➕ ຢູ່ໜ້າໃດກໍໄດ້ແລ້ວກອກຂໍ້ມູນດ້ວຍຕົນເອງ.</p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-block">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>ການຕິດຕາມຜົນງານປະຈຳວັນ (Daily Monitoring)</h3>
+                    <p>ກັບມາທີ່ໜ້າ <strong>Home Dashboard 🏠</strong> ເພື່ອກວດເບິ່ງ Daily Streak (ມື້ນີ້ເຮົາອອກກຳລັງກາຍບັນລຸເປົ້າໝາຍນາທີຫຼືຍັງ?), Nutrition Intake (ມື້ນີ້ເຮົາຄວນກິນອາຫານເທົ່າໃດ?), ແລະ Recent Workouts ຫຼ້າສຸດ.</p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-block">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>ການວິເຄາະ ແລະ ປັບປຸງເປົ້າໝາຍ (Analysis & Settings)</h3>
+                    <p>ກົດເຂົ້າແຖບ <strong>Statistics 📊</strong> ເພື່ອເບິ່ງແນວໂນ້ມກຣາຟ 7 ມື້ ຫຼື 30 ມື້ຜ່ານມາ ແລະ ກົດເຂົ້າແຖບ <strong>Settings ⚙️</strong> ເພື່ອປ່ຽນແປງເປົ້າໝາຍ ຫຼື ເປີດໂໝດມືດ (Dark Mode) ເພື່ອຄວາມສະບາຍຕາ.</p>
+                </div>
+            </div>
+
+            <!-- ── ສ່ວນທີ 3 ── -->
+            <h1>🧩 ສ່ວນທີ 3: ການວິເຄາະຄວາມສຳຄັນຂອງແຕ່ລະຟັງຊັນ (Feature Value Matrix)</h1>
+            <p>ຕາຕະລາງລຸ່ມນີ້ຈະອະທິບາຍເຖິງໜ້າທີ່, ຄວາມສຳຄັນ, ແລະ ຜົນກະທົບຕໍ່ຜູ້ໃຊ້ (UX Impact) ຂອງແຕ່ລະຟັງຊັນໃນແອັບ FitLog:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ຟັງຊັນ (Feature)</th>
+                        <th>ລະດັບຄວາມສຳຄັນ</th>
+                        <th>ຜົນກະທົບ ແລະ ຄຸນຄ່າຕໍ່ຜູ້ໃຊ້ (UX Value)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. ຈັດການຂໍ້ມູນອອກກຳລັງກາຍ (Workout CRUD)</strong></td>
+                        <td><span class="badge-importance importance-high">🔴 ສູງທີ່ສຸດ</span></td>
+                        <td><strong>ຫຼັກຂອງແອັບ:</strong> ຊ່ວຍໃຫ້ຜູ້ໃຊ້ຈັດການ, ແກ້ໄຂ, ຄົ້ນຫາ ແລະ ກັ່ນຕອງປະຫວັດການອອກກຳລັງກາຍທັງໝົດໄດ້ຢ່າງເປັນລະບົບ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. ລະບົບໂປຣໄຟລ໌ສຸຂະພາບ (Nutrition & BMR Calculator)</strong></td>
+                        <td><span class="badge-importance importance-high">🔴 ສູງ</span></td>
+                        <td><strong>ສ້າງຄວາມຫຼູຫຼາ:</strong> ຄຳນວນແຄລໍຣີ ແລະ Macronutrients ອັດຕະໂນມັດ ໂດຍບໍ່ຕ້ອງເພິ່ງພາ Coach ສ່ວນຕົວ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. ໜ້າຫຼັກສະຫຼຸບຜົນ (Home Dashboard)</strong></td>
+                        <td><span class="badge-importance importance-high">🔴 ສູງ</span></td>
+                        <td><strong>First Impression:</strong> ສະແດງຂໍ້ມູນສຳຄັນທັງໝົດ (Streak, Macronutrients, Stats) ໃນໜ້າດຽວ ຫຼຸດຜ່ອນການກົດຫຼາຍຂັ້ນຕອນ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. ກຣາຟສະຖິຕິ (Interactive Statistics)</strong></td>
+                        <td><span class="badge-importance importance-medium">🟡 ກາງ-ສູງ</span></td>
+                        <td><strong>ສ້າງແຮງຈູງໃຈ:</strong> ສະແດງແນວໂນ້ມ ແລະ ສັດສ່ວນກິດຈະກຳຜ່ານກຣາຟຫຼາກຫຼາຍຮູບແບບ ເຮັດໃຫ້ເຫັນພຶດຕິກຳສຸຂະພາບຊັດເຈນ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. ຕົວຈັບເວລາ (Stopwatch Timer)</strong></td>
+                        <td><span class="badge-importance importance-medium">🟡 ກາງ</span></td>
+                        <td><strong>Seamless Flow:</strong> ຈັບເວລາຈິງ ແລະ ສົ່ງຄ່າເວລາໄປຟອມບັນທຶກທັນທີ ໂດຍບໍ່ຕ້ອງພິມເອງ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6. ລະບົບ Streak 🔥</strong></td>
+                        <td><span class="badge-importance importance-medium">🟡 ກາງ</span></td>
+                        <td><strong>ສ້າງນິໄສ:</strong> ໃຊ້ Gamification ກະຕຸ້ນໃຫ້ຜູ້ໃຊ້ອອກກຳລັງກາຍທຸກໆມື້ ເພື່ອຮັກສາ Streak ບໍ່ໃຫ້ເປັນ 0.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7. ໂໝດມືດ (Dark Mode)</strong></td>
+                        <td><span class="badge-importance importance-low">🟢 ຕ່ຳ-ກາງ</span></td>
+                        <td><strong>UX Premium:</strong> ຮັກສາສາຍຕາໃນການອ່ານຕອນກາງຄືນ ແລະ ເພີ່ມຄວາມຫຼູຫຼາສວຍງາມ.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-info">
+                <strong>📝 ຂໍ້ມູນເພີ່ມເຕີມ:</strong> ແບບທີ 2 (Product Handbook) ນີ້ ເໝາະສຳລັບການນຳໃຊ້ໃນການສະເໜີຈຸດເດັ່ນຂອງແອັບ (Pitching) ໃຫ້ກັບນັກລົງທຶນ ຫຼື ຜູ້ໃຊ້ທົ່ວໄປ ເພາະເນັ້ນເຫັນ **ຄຸນຄ່າ (Value)** ແລະ **ຜົນປະໂຫຍດ** ທີ່ຜູ້ໃຊ້ຈະໄດ້ຮັບຢ່າງຊັດເຈນ ໂດຍຫຼີກລ່ຽງຄຳສັບທາງເຕັກນິກທີ່ເຂົ້າໃຈຍາກ.
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="btn-top" id="topBtn" onclick="scrollToTop()">▲</button>
+
+    <!-- ── SCRIPTS FOR INTERACTIVITY ── -->
+    <script>
+        // Light/Dark Mode Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const themeBtn = document.getElementById('themeBtn');
+            
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                themeBtn.innerHTML = '🌙 Dark Mode';
+                localStorage.setItem('theme-handbook', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeBtn.innerHTML = '☀️ Light Mode';
+                localStorage.setItem('theme-handbook', 'dark');
+            }
+        }
+
+        // Keep chosen theme on reload
+        window.onload = function() {
+            const savedTheme = localStorage.getItem('theme-handbook');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('themeBtn').innerHTML = '☀️ Light Mode';
+            }
+        }
+
+        // Back to top button visibility
+        const topBtn = document.getElementById('topBtn');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                topBtn.classList.add('show');
+            } else {
+                topBtn.classList.remove('show');
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>

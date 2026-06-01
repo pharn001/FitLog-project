@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="lo">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitLog Project Book — ປຶ້ມລາຍງານໂຄງການພັດທະນາແອັບ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Mermaid.js for drawing diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+        });
+    </script>
+
+    <style>
+        :root {
+            --primary: #009688;
+            --primary-light: #4db6ac;
+            --primary-dark: #00695c;
+            --accent: #ff7043;
+            --background: #f4f7f6;
+            --surface: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #5a738e;
+            --border: #e2e8f0;
+            --code-bg: #f8fafc;
+            --font-family: 'Outfit', 'Noto Sans Lao', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        [data-theme="dark"] {
+            --background: #121212;
+            --surface: #1e1e1e;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #2d3748;
+            --code-bg: #111827;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background);
+            color: var(--text-main);
+            line-height: 1.7;
+            transition: var(--transition);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar (Table of Contents) ── */
+        .sidebar {
+            width: 280px;
+            background-color: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .sidebar h3 {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-item {
+            margin-bottom: 0.8rem;
+        }
+
+        .toc-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+        }
+
+        .toc-link:hover {
+            color: var(--primary);
+            background-color: rgba(0, 150, 136, 0.08);
+            transform: translateX(4px);
+        }
+
+        .toc-sublist {
+            list-style: none;
+            padding-left: 1rem;
+            margin-top: 0.4rem;
+            border-left: 1px solid var(--border);
+        }
+
+        .toc-subitem {
+            margin-bottom: 0.4rem;
+        }
+
+        .toc-sublink {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: block;
+        }
+
+        .toc-sublink:hover {
+            color: var(--primary);
+        }
+
+        /* ── Main Content Container ── */
+        .main-container {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 3rem 4rem;
+            max-width: 1100px;
+            transition: var(--transition);
+        }
+
+        /* Header controls */
+        .header-controls {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .btn-theme {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .btn-theme:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .doc-card {
+            background-color: var(--surface);
+            border-radius: 20px;
+            padding: 3.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        /* Typography styling */
+        h1.doc-title {
+            font-size: 2.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        h2.doc-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Outfit', 'Noto Sans Lao', sans-serif;
+            color: var(--text-main);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            border-left: 5px solid var(--primary);
+            padding-left: 0.8rem;
+            margin-top: 3.5rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-top: 2rem;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 0.4rem;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            margin-top: 1.5rem;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        /* Strong styling */
+        strong {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        [data-theme="dark"] strong {
+            color: var(--primary-light);
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        th,
+        td {
+            padding: 10px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--primary);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(0, 150, 136, 0.03);
+        }
+
+        tr:hover {
+            background-color: rgba(0, 150, 136, 0.06);
+        }
+
+        /* Alert Box Styling */
+        .alert {
+            padding: 1rem 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            border-left: 5px solid;
+            font-size: 0.95rem;
+        }
+
+        .alert-important {
+            background-color: rgba(255, 112, 67, 0.08);
+            border-color: var(--accent);
+            color: var(--text-main);
+        }
+
+        .alert-tip {
+            background-color: rgba(77, 182, 172, 0.08);
+            border-color: var(--primary-light);
+            color: var(--text-main);
+        }
+
+        /* Lists */
+        ul,
+        ol {
+            margin-bottom: 1.2rem;
+            padding-left: 1.8rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code block */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            padding: 1.2rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+
+        pre code {
+            padding: 0;
+            background-color: transparent;
+            color: var(--text-main);
+        }
+
+        /* Divider */
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+            margin: 3rem 0;
+        }
+
+        /* Mermaid graphic container */
+        .mermaid-container {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            box-shadow: var(--shadow);
+        }
+
+        /* Back to top button */
+        .btn-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary);
+            color: #ffffff;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .btn-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-container {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── TABLE OF CONTENTS SIDEBAR ── -->
+    <div class="sidebar">
+        <h3>📋 ສາລະບານ</h3>
+        <ul class="toc-list">
+            <li class="toc-item">
+                <a href="#chap1" class="toc-link">ບົດທີ 1: ບົດນຳ</a>
+                <ul class="toc-sublist">
+                    <li class="toc-subitem"><a href="#1.1" class="toc-sublink">1.1 ຄວາມເປັນມາ</a></li>
+                    <li class="toc-subitem"><a href="#1.2" class="toc-sublink">1.2 ຈຸດປະສົງ</a></li>
+                    <li class="toc-subitem"><a href="#1.3" class="toc-sublink">1.3 ຂອບເຂດ</a></li>
+                    <li class="toc-subitem"><a href="#1.4" class="toc-sublink">1.4 ຜົນປະໂຫຍດ</a></li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <a href="#chap2" class="toc-link">ບົດທີ 2: ການອອກແບບລະບົບ</a>
+                <ul class="toc-sublist">
+                    <li class="toc-subitem"><a href="#2.1" class="toc-sublink">2.1 ສະຖາປັດຕະຍະກຳ</a></li>
+                    <li class="toc-subitem"><a href="#2.2" class="toc-sublink">2.2 ເທັກໂນໂລຊີ</a></li>
+                    <li class="toc-subitem"><a href="#2.3" class="toc-sublink">2.3 ຖານຂໍ້ມູນ</a></li>
+                    <li class="toc-subitem"><a href="#2.4" class="toc-sublink">2.4 UI/UX & ລະບົບສີ</a></li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <a href="#chap3" class="toc-link">ບົດທີ 3: ຄູ່ມືການໃຊ້ງານ</a>
+                <ul class="toc-sublist">
+                    <li class="toc-subitem"><a href="#3.1" class="toc-sublink">3.1 ຂັ້ນຕອນການເຮັດວຽກ</a></li>
+                    <li class="toc-subitem"><a href="#3.2" class="toc-sublink">3.2 ລາຍລະອຽດໜ້າຈໍ</a></li>
+                    <li class="toc-subitem"><a href="#3.3" class="toc-sublink">3.3 ວິທີການຕິດຕັ້ງ</a></li>
+                    <li class="toc-subitem"><a href="#3.4" class="toc-sublink">3.4 ສະຫຼຸບ & Future Work</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ── MAIN CONTENT CONTAINER ── -->
+    <div class="main-container">
+        <div class="header-controls">
+            <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">
+                🌙 Dark Mode
+            </button>
+        </div>
+
+        <div class="doc-card">
+            <h1 class="doc-title">📘 ປຶ້ມລາຍງານໂຄງການພັດທະນາແອັບພລິເຄຊັນ FitLog</h1>
+            <h2 class="doc-subtitle">(FitLog Project Documentation & Presentation Book)</h2>
+
+            <!-- ── ບົດທີ 1 ── -->
+            <h1 id="chap1">ບົດທີ 1: ບົດນຳ (Chapter 1: Introduction)</h1>
+
+            <h2 id="1.1">1.1 ຄວາມເປັນມາ ແລະ ຄວາມສຳຄັນ (Background & Significance)</h2>
+            <p>ໃນຍຸກປັດຈຸບັນ, ການຮັກສາສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍ (Fitness & Well-being)
+                ໄດ້ກາຍມາເປັນສ່ວນໜຶ່ງທີ່ສຳຄັນໃນຊີວິດປະຈຳວັນຂອງຄົນເຮົາ. ເຖິງຢ່າງໃດກໍຕາມ, ບັນຫາທີ່ຫຼາຍຄົນພົບພໍ້ແມ່ນ
+                <strong>ການຂາດຄວາມຕໍ່ເນື່ອງ (Consistency)</strong> ແລະ
+                <strong>ການບໍ່ມີການຕິດຕາມຂໍ້ມູນທີ່ມີປະສິດທິພາບ</strong>.
+                ຜູ້ໃຊ້ຫຼາຍຄົນອອກກຳລັງກາຍໂດຍບໍ່ຮູ້ວ່າຕົນເອງເຜົາຜານແຄລໍຣີໄປເທົ່າໃດ, ອອກກຳລັງກາຍປະເພດໃດຫຼາຍທີ່ສຸດ, ຫຼື
+                ຄວນບໍລິໂພກອາຫານເທົ່າໃດຈຶ່ງຈະເໝາະສົມກັບເປົ້າໝາຍຮ່າງກາຍ (Weight Loss, Muscle Gain, or Maintenance).</p>
+            <p>ເພື່ອແກ້ໄຂບັນຫາດັ່ງກ່າວ, ໂຄງການພັດທະນາ <strong>FitLog</strong> ຈຶ່ງຖືກສ້າງຂຶ້ນ. FitLog ແມ່ນ Mobile
+                Application ທີ່ອອກແບບມາເພື່ອເປັນຕົວຊ່ວຍສ່ວນຕົວໃນການບັນທຶກ ແລະ ຕິດຕາມການອອກກຳລັງກາຍ
+                ພ້ອມທັງຄຳນວນໂພຊະນາການທີ່ເໝາະສົມກັບຮ່າງກາຍແບບອັດຕະໂນມັດ ໂດຍເນັ້ນໃສ່ປະສົບການຜູ້ໃຊ້ (UX/UI) ທີ່ສວຍງາມ,
+                ທັນສະໄໝ, ເຮັດວຽກໄດ້ວ່ອງໄວ, ແລະ ປົກປ້ອງຄວາມເປັນສ່ວນຕົວຂອງຂໍ້ມູນຜູ້ໃຊ້ (Data Privacy)
+                ດ້ວຍການເກັບຂໍ້ມູນທັງໝົດໄວ້ໃນອຸປະກອນຂອງຜູ້ໃຊ້ເອງ (Offline-First local database).</p>
+
+            <h2 id="1.2">1.2 ຈຸດປະສົງຂອງໂຄງການ (Project Objectives)</h2>
+            <ol>
+                <li><strong>ເພື່ອພັດທະນາລະບົບບັນທຶກການອອກກຳລັງກາຍ</strong> ທີ່ມີຄວາມຍືດຫຍຸ່ນ
+                    ສາມາດບັນທຶກຂໍ້ມູນປະເພດການອອກກຳລັງກາຍ, ໄລຍະເວລາ, ແຄລໍຣີ ແລະ ວັນທີໄດ້ຢ່າງຊັດເຈນ.</li>
+                <li><strong>ເພື່ອສ້າງລະບົບຕິດຕາມຄວາມຕໍ່ເນື່ອງ (Gamification)</strong> ຜ່ານ Streak counter ເພື່ອກະຕຸ້ນ
+                    ແລະ ສ້າງແຮງຈູງໃຈໃຫ້ຜູ້ໃຊອກກຳລັງກາຍຢ່າງສະໝໍ່າສະເໝີ.</li>
+                <li><strong>ເພື່ອອອກແບບ ແລະ ສ້າງລະບົບວິເຄາະສະຖິຕິ (Data Visualization)</strong> ທີ່ເຂົ້າໃຈງ່າຍ
+                    ຜ່ານກຣາຟຫຼາກຫຼາຍຮູບແບບ (Bar Chart, Line Chart, Pie Chart) ເຮັດໃຫ້ຜູ້ໃຊ້ເຫັນແນວໂນ້ມ ແລະ
+                    ພຶດຕິກຳການອອກກຳລັງກາຍຂອງຕົນເອງ.</li>
+                <li><strong>ເພື່ອຄຳນວນໂພຊະນາການ ແລະ ພະລັງງານສ່ວນບຸກຄົນ</strong> ໂດຍອີງໃສ່ຂໍ້ມູນທາງກາຍະພາບຂອງຜູ້ໃຊ້
+                    (Weight, Height, Age, Activity level, Goal) ເພື່ອແນະນຳປະລິມານ Macronutrients (Protein, Carbs, Fat)
+                    ທີ່ເໝາະສົມ.</li>
+            </ol>
+
+            <h2 id="1.3">1.3 ຂອບເຂດຂອງໂຄງການ (Project Scope)</h2>
+            <ul>
+                <li><strong>ຂໍ້ມູນທ້ອງຖິ່ນ (Local-First Database):</strong> ລະບົບເກັບຂໍ້ມູນທັງໝົດໃນເຄື່ອງຜູ້ໃຊ້
+                    ໂດຍບໍ່ຕ້ອງໃຊ້ Internet ເພື່ອຄວາມປອດໄພຂອງຂໍ້ມູນ ແລະ ຄວາມວ່ອງໄວ.</li>
+                <li><strong>Prefix CRUD:</strong> ສາມາດ ເພີ່ມ, ລຶບ, ແກ້ໄຂ, ຄົ້ນຫາ ແລະ ກັ່ນຕອງ (Filter)
+                    ຂໍ້ມູນການອອກກຳລັງກາຍໄດ້ທັງໝົດ.</li>
+                <li><strong>ລະບົບຈັບເວລາ (Built-in Stopwatch):</strong> ມີລະບົບຈັບເວລາອອກກຳລັງກາຍ ແລະ
+                    ສາມາດສົ່ງຄ່າໄລຍະເວລາໄປຍັງຟອມບັນທຶກໄດ້ທັນທີ.</li>
+                <li><strong>ການຄຳນວນພະລັງງານ ແລະ BMI (Body Metrics & BMR/TDEE):</strong> ຄຳນວນຄ່າ BMI, BMR, TDEE ແລະ
+                    Macronutrients ອັດຕະໂນມັດຫຼັງຈາກຜູ້ໃຊ້ຕັ້ງຄ່າ Profile.</li>
+                <li><strong>ການສະແດງຜົນສະຖິຕິ (Interactive Charts):</strong> ສະແດງກຣາຟແຄລໍຣີລາຍວັນ,
+                    ກຣາຟສັດສ່ວນປະເພດການອອກກຳລັງກາຍ ແລະ ທ່າອ່ຽງໄລຍະເວລາ.</li>
+                <li><strong>ຮອງຮັບສອງ Theme (Dark & Light Theme):</strong> ສາມາດສະລັບໂໝດມືດ ແລະ
+                    ໂໝດສະຫວ່າງໄດ້ຕາມຄວາມຕ້ອງການ.</li>
+            </ul>
+
+            <h2 id="1.4">1.4 ຜົນປະໂຫຍດທີ່ຄາດວ່າຈະໄດ້ຮັບ (Expected Benefits)</h2>
+            <ul>
+                <li><strong>ສຳລັບຜູ້ໃຊ້:</strong> ໄດ້ຮັບເຄື່ອງມືທີ່ຊ່ວຍໃຫ້ສາມາດຕິດຕາມສຸຂະພາບ ແລະ
+                    ການອອກກຳລັງກາຍໄດ້ຢ່າງເປັນລະບົບ, ມີແຮງຈູງໃຈໃນການອອກກຳລັງກາຍຫຼາຍຂຶ້ນຈາກ Streak, ແລະ
+                    ສາມາດວາງແຜນການກິນອາຫານໃຫ້ຖືກຕ້ອງຕາມເປົ້າໝາຍສຸຂະພາບ.</li>
+                <li><strong>ສຳລັບນັກພັດທະນາ:</strong> ໄດ້ຮຽນຮູ້ ແລະ ປະຕິບັດການພັດທະນາແອັບພລິເຄຊັນດ້ວຍ Flutter
+                    ໂດຍໃຊ້ສະຖາປັດຕະຍະກຳ BLoC, ການຈັດການຖານຂໍ້ມູນ Isar Database ເຊິ່ງເປັນ NoSQL ທີ່ໄວທີ່ສຸດໃນປັດຈຸບັນ ແລະ
+                    ການສ້າງ UI ລະດັບ Premium.</li>
+            </ul>
+
+            <hr>
+
+            <!-- ── ບົດທີ 2 ── -->
+            <h1 id="chap2">ບົດທີ 2: ການອອກແບບ ແລະ ສະຖາປັດຕະຍະກຳລະບົບ (Chapter 2: System Design & Architecture)</h1>
+
+            <h2 id="2.1">2.1 ສະຖາປັດຕະຍະກຳຂອງແອັບພລິເຄຊັນ (App Architecture)</h2>
+            <p>FitLog ນຳໃຊ້ສະຖາປັດຕະຍະກຳການອອກແບບແບບ <strong>Layered Architecture</strong> ຮ່ວມກັບ <strong>BLoC
+                    Pattern</strong> ເພື່ອແຍກສ່ວນຂອງ User Interface (UI), Business Logic, ແລະ Data Access
+                ອອກຈາກກັນຢ່າງເດັດຂາດ (Separation of Concerns).</p>
+
+            <div class="mermaid-container">
+                <pre class="mermaid">
+                    graph TD
+                        UI["Presentation Layer (UI Screens)"] <-->|Events & States| BLoC["Business Logic Layer (BLoCs)"]
+                        BLoC <-->|Data Request| Repo["Repository Layer (WorkoutRepository)"]
+                        Repo <-->|Local Query| DB[(Isar Database)]
+                        style UI fill:#009688,stroke:#00695c,stroke-width:2px,color:#fff
+                        style BLoC fill:#ff7043,stroke:#ff7043,stroke-width:2px,color:#fff
+                        style Repo fill:#5c6bc0,stroke:#5c6bc0,stroke-width:2px,color:#fff
+                        style DB fill:#78909c,stroke:#546e7a,stroke-width:2px,color:#fff
+                </pre>
+            </div>
+
+            <h2 id="2.2">2.2 ເທັກໂນໂລຊີທີ່ເລືອກໃຊ້ (Technology Stack)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ເທັກໂນໂລຊີ (Tech Stack)</th>
+                        <th>ລາຍລະອຽດການນຳໃຊ້</th>
+                        <th>ເຫດຜົນ ແລະ ຈຸດເດັ່ນ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Flutter (Dart)</strong></td>
+                        <td>Framework ຫຼັກໃນການພັດທະນາ</td>
+                        <td>ຂຽນ Code ດຽວລັນໄດ້ທັງ iOS, Android, Web, and Desktop, ໃຫ້ UI ທີ່ລື່ນໄຫຼ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Isar Database</strong></td>
+                        <td>ຖານຂໍ້ມູນ Local NoSQL ຄວາມໄວສູງ</td>
+                        <td>ເກັບຂໍ້ມູນແບບ Offline, ວ່ອງໄວກວ່າ SQLite ຫຼາຍເທົ່າ, ຮອງຮັບ Streams.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>flutter_bloc</strong></td>
+                        <td>ການຈັດການ State Management</td>
+                        <td>ແຍກ Logic ອອກຈາກ UI ເຮັດໃຫ້ Code ເປັນລະບົບ ແລະ ທົດສອບງ່າຍ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>go_router</strong></td>
+                        <td>ການຈັດການ Navigation & Routing</td>
+                        <td>ຮອງຮັບ ShellRoute ສ້າງ Bottom Navigation ທີ່ສະດວກ ແລະ ລື່ນໄຫຼ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>fl_chart</strong></td>
+                        <td>ລະບົບສະແດງຜົນກຣາຟວິເຄາະ</td>
+                        <td>ສ້າງກຣາຟທີ່ສວຍງາມ, ມີ Animation ແລະ ຮອງຮັບການ Touch/Interaction.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="2.3">2.3 ການອອກແບບຖານຂໍ້ມູນ (Data Model & Schema)</h2>
+            <h3>1. Workout Schema (ເກັບຂໍ້ມູນການອອກກຳລັງກາຍ)</h3>
+            <ul>
+                <li><code>id</code>: <code>Id</code> (Auto-increment, Primary Key)</li>
+                <li><code>name</code>: <code>String</code> (ຊື່ກິດຈະກຳ ເຊັ່ນ "Morning Cardio")</li>
+                <li><code>duration</code>: <code>int</code> (ໄລຍະເວລາ ເປັນນາທີ)</li>
+                <li><code>calories</code>: <code>int</code> (ແຄລໍຣີທີ່ເຜົາຜານ)</li>
+                <li><code>date</code>: <code>DateTime</code> (ວັນທີ ແລະ ເວລາ, ຕັ້ງ <strong>@Index</strong> ເພື່ອ query
+                    ໄວ)</li>
+                <li><code>notes</code>: <code>String?</code> (ບັນທຶກເພີ່ມເຕີມ - optional)</li>
+                <li><code>type</code>: <code>String</code> (ປະເພດກິດຈະກຳ ເຊັ່ນ Running, Swimming, Yoga - ຕັ້ງ
+                    <strong>@Index</strong>)</li>
+            </ul>
+
+            <div class="alert alert-important">
+                <strong>💡 ຂໍ້ຄວນລະວັງ:</strong> ການໃສ່ <code>@Index()</code> ໃຫ້ກັບ <code>date</code> ແລະ
+                <code>type</code> ແມ່ນມີຄວາມສຳຄັນຫຼາຍ ເພາະຈະຊ່ວຍໃຫ້ລະບົບຄົ້ນຫາ ແລະ ກັ່ນຕອງຂໍ້ມູນປະຫວັດ (Filter)
+                ເຮັດວຽກໄດ້ວ່ອງໄວເຖິງແມ່ນວ່າຈະມີຂໍ້ມູນຫຼາຍພັນແຖວກໍຕາມ.
+            </div>
+
+            <h3>2. UserProfile Schema (ເກັບຂໍ້ມູນຮ່າງກາຍ ແລະ ເປົ້າໝາຍ)</h3>
+            <p>ເກັບຂໍ້ມູນກາຍະພາບເພື່ອຄຳນວນໂພຊະນາການ ແລະ ສຸຂະພາບ: <code>gender</code>, <code>weight</code>,
+                <code>height</code>, <code>age</code>, <code>activityLevel</code>, <code>goal</code>.</p>
+
+            <p><strong>ສູດຄຳນວນອັດຕະໂນມັດ (Computed Properties):</strong></p>
+            <ul>
+                <li><strong>BMI:</strong> <code>Weight (kg) / (Height (m))²</code></li>
+                <li><strong>BMR (Mifflin-St Jeor):</strong>
+                    <ul>
+                        <li>ເພດຊາຍ: <code>10 × weight + 6.25 × height - 5 × age + 5</code></li>
+                        <li>ເພດຍິງ: <code>10 × weight + 6.25 × height - 5 × age - 161</code></li>
+                    </ul>
+                </li>
+                <li><strong>TDEE:</strong> <code>BMR × Activity Factor (1.2 to 1.9)</code></li>
+                <li><strong>Adjusted Calories (ເປົ້າໝາຍ):</strong> ຫຼຸດນ້ຳໜັກ = <code>TDEE - 500 kcal</code> | ເພີ່ມກ້າມ
+                    = <code>TDEE + 300 kcal</code></li>
+                <li><strong>Macros:</strong> Protein (30%), Carbs (40%), Fat (30% ຂອງພະລັງງານທັງໝົດ)</li>
+            </ul>
+
+            <h2 id="2.4">2.4 ລະບົບການອອກແບບ UI/UX ແລະ ລະບົບສີ (Design System & App Theme)</h2>
+            <ul>
+                <li><strong>Typography:</strong> ໃຊ້ຟອນທ໌ <strong>HinsiewLAO</strong> (Hinsiew-SemiBold.otf) ເປັນຫຼັກ
+                    ເຮັດໃຫ້ພາສາລາວສະແດງຜົນໄດ້ມີມິຕິ ແລະ ອ່ານງ່າຍ.</li>
+                <li><strong>Color System (AppColors):</strong> ໃຊ້ສີ Teal (<code>#009688</code>) ເປັນສີຫຼັກ
+                    ໃຫ້ຄວາມຮູ້ສຶກເຖິງພະລັງງານ ແລະ ສຸຂະພາບ ຕັດດ້ວຍສີ Coral Orange (<code>#FF7043</code>)
+                    ເພື່ອດຶງດູດສາຍຕາ.</li>
+                <li><strong>Card Design:</strong> ໃຊ້ Gradient gradients ທີ່ແຕກຕ່າງກັນໃນການສະແດງຜົນ Dashboard (Teal
+                    ສໍາລັບ Workout, Orange ສໍາລັບ Calories, Indigo ສໍາລັບ Duration) ເພື່ອບໍ່ໃຫ້ຜູ້ໃຊ້ອ່ານຂໍ້ມູນສັບສົນ.
+                </li>
+            </ul>
+
+            <hr>
+
+            <!-- ── ບົດທີ 3 ── -->
+            <h1 id="chap3">ບົດທີ 3: ການຈັດຕັ້ງປະຕິບັດ ແລະ ຄູ່ມືການໃຊ້ງານ (Chapter 3: Implementation & User Guide)</h1>
+
+            <h2 id="3.1">3.1 ຂັ້ນຕອນການເຮັດວຽກຂອງລະບົບ (System Workflow & Flowchart)</h2>
+            <div class="mermaid-container">
+                <pre class="mermaid">
+                    flowchart TD
+                        A[ເລີ່ມຕົ້ນເປີດແອັບ] --> B{ມີ Profile ແລ້ວບໍ?}
+                        B -->|ບໍ່ມີ| C[ຕັ້ງຄ່າ Profile]
+                        C --> D[ຄຳນວນ BMR/TDEE ອັດຕະໂນມັດ]
+                        D --> E[ບັນທຶກລົງ Isar DB]
+                        E --> F[ໜ້າຫຼັກ Home Dashboard]
+                        B -->|ມີແລ້ວ| F
+                        
+                        F --> G{ເລືອກກິດຈະກຳ}
+                        G -->|ຈັບເວລາ| H[ໜ້າຈັບເວລາ Timer]
+                        H -->|ຢຸດ ແລະ ບັນທຶກ| I[ຟອມ Add Workout - ດຶງເວລາອັດຕະໂນມັດ]
+                        G -->|ບັນທຶກດ້ວຍມື| J[ກົດປຸ່ມ FAB +]
+                        J --> I
+                        
+                        I --> K[ບັນທຶກຂໍ້ມູນລົງ DB]
+                        K --> L[ອັບເດດ Streak & ກຣາຟສະຖິຕິ]
+                        L --> F
+                </pre>
+            </div>
+
+            <h2 id="3.2">3.2 ການວິເຄາະໜ້າຈໍ ແລະ ຟັງຊັນຫຼັກ (Detailed Screen & Feature Breakdown)</h2>
+            <h3>❶ ໜ້າຫຼັກ (Home Screen)</h3>
+            <p>ເປັນ Dashboard ສູນກາງສະແດງຜົນສຸຂະພາບລາຍວັນ ປະກອບດ້ວຍ <strong>Streak Card 🔥</strong>
+                ເພື່ອສະແດງມື້ທີ່ອອກກຳລັງກາຍຕິດຕໍ່ກັນ, <strong>Nutrition Card 🥗</strong> ສະແດງແຄລໍຣີເປົ້າໝາຍ ແລະ
+                Macronutrients progress bars ທີ່ຄຳນວນມາໃຫ້ແລ້ວ, <strong>General Stats</strong> ສະຫຼຸບຜົນງານທັງໝົດ, ແລະ
+                <strong>Recent Workouts</strong> 3 ລາຍການຫຼ້າສຸດ.</p>
+
+            <h3>❷ ໜ້າປະຫວັດ (History Screen)</h3>
+            <p>ສູນລວມຈັດການ ແລະ ກວດສອບຂໍ້ມູນການອອກກຳລັງກາຍໃນອະດີດ ມີ <strong>Search Bar 🔍</strong> ພ້ອມ <strong>Filter
+                    Chips 🏷️</strong> ຕາມປະເພດກິດຈະກຳ. ຜູ້ໃຊ້ສາມາດກົດເບິ່ງລາຍລະອຽດ, ກົດຄ້າງເພື່ອແກ້ໄຂ ຫຼື ປັດ (Swipe to
+                delete) ເພື່ອລຶບຂໍ້ມູນໄດ້ທັນທີ.</p>
+
+            <h3>❸ ໜ້າສະຖິຕິ (Statistics Screen)</h3>
+            <p>ວິເຄາະຂໍ້ມູນອອກມາເປັນພາບກຣາຟ (Data Visualization) ໂດຍໃຊ້ <strong>FL Chart</strong> ປະກອບດ້ວຍ 3 ກຣາຟຫຼັກ:
+                ກຣາຟແທ່ງແຄລໍຣີລາຍວັນ (Bar Chart), ກຣາຟວົງມົນສັດສ່ວນປະເພດ workout (Pie Chart), ແລະ
+                ກຣາຟເສັ້ນແນວໂນ້ມໄລຍະເວລາ (Line Chart).</p>
+
+            <h3>❹ ໜ້າຈັບເວລາ (Timer Screen)</h3>
+            <p>ເຄື່ອງມືຈັບເວລາອອກກຳລັງກາຍແບບ Real-time ທີ່ອອກແບບດ້ວຍ <code>CustomPaint</code> ວາດ Gradient Arc ທີ່ສວຍງາມ
+                ເມື່ອອອກກຳລັງກາຍສຳເລັດ ສາມາດກົດ Save ເພື່ອສົ່ງຄ່າເວລາໄປໜ້າ Add ໄດ້ທັນທີ.</p>
+
+            <h2 id="3.3">3.3 ວິທີການຕິດຕັ້ງ ແລະ ລັນລະບົບ (Setup & Running Guide)</h2>
+            <div class="alert alert-tip">
+                <strong>💡 ຄຳແນະນຳ:</strong> ໃຫ້ແນ່ໃຈວ່າທ່ານໄດ້ຕິດຕັ້ງ Flutter SDK ລຸ້ນ >= 3.10.1 ຮຽບຮ້ອຍແລ້ວ
+                ກ່ອນຈະເລີ່ມລັນຄຳສັ່ງລຸ່ມນີ້.
+            </div>
+
+            <p>ເປີດ Terminal ໃນໂຟນເດີໂຄງການ ແລ້ວລັນຄຳສັ່ງຕາມລໍາດັບດັ່ງນີ້:</p>
+            <pre><code># 1. ດາວໂຫຼດ packages ແລະ dependencies ທັງໝົດ
+flutter pub get
+
+# 2. ສ້າງໄຟລ໌ Database Generator (Isar Schemas)
+dart run build_runner build --delete-conflicting-outputs
+
+# 3. ລັນແອັບພລິເຄຊັນໃນ Emulator ຫຼື ໂທລະສັບຈິງ
+flutter run
+
+# 4. ຫາກຕ້ອງການລັນໃນ Web browser (Chrome)
+flutter run -d chrome</code></pre>
+
+            <h2 id="3.4">3.4 ສະຫຼຸບຜົນ ແລະ ແຜນພັດທະນາໃນອະນາຄົດ (Conclusion & Future Work)</h2>
+            <p>ໂຄງການພັດທະນາແອັບພລິເຄຊັນ <strong>FitLog</strong> ປະສົບຜົນສຳເລັດໃນການສ້າງເຄື່ອງມືຕິດຕາມການອອກກຳລັງກາຍ ແລະ
+                ໂພຊະນາການທ້ອງຖິ່ນ (Local-First Offline) ທີ່ເຮັດວຽກໄດ້ຢ່າງວ່ອງໄວ ແລະ ມີຄວາມຫຼູຫຼາສວຍງາມ.</p>
+            <p><strong>ແຜນພັດທະນາໃນອະນາຄົດ (Future Roadmap):</strong></p>
+            <ol>
+                <li><strong>Cloud Sync & Backup:</strong> ເພີ່ມການ Backup ຂໍ້ມູນຂຶ້ນ Cloud (Supabase/Firebase)
+                    ປ້ອງກັນຂໍ້ມູນສູນຫາຍ.</li>
+                <li><strong>Wearable Integration:</strong> ເຊື່ອມຕໍ່ກັບ Smartwatches ເຊັ່ນ Apple Watch, Garmin
+                    ເພື່ອດຶງຂໍ້ມູນ Heart Rate.</li>
+                <li><strong>AI Fitness Coach:</strong> ໃຊ້ AI ແນະນຳຕາຕະລາງການອອກກຳລັງກາຍ ແລະ
+                    ເມນູອາຫານໃຫ້ເໝາະສົມກັບຮ່າງກາຍແຕ່ລະຄົນ.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="btn-top" id="topBtn" onclick="scrollToTop()">▲</button>
+
+    <!-- ── SCRIPTS FOR INTERACTIVITY ── -->
+    <script>
+        // Light/Dark Mode Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const themeBtn = document.getElementById('themeBtn');
+
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                themeBtn.innerHTML = '🌙 Dark Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeBtn.innerHTML = '☀️ Light Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Keep chosen theme on reload
+        window.onload = function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('themeBtn').innerHTML = '☀️ Light Mode';
+            }
+        }
+
+        // Back to top button visibility
+        const topBtn = document.getElementById('topBtn');
+        window.onscroll = function () {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                topBtn.classList.add('show');
+            } else {
+                topBtn.classList.remove('show');
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+
+</html>
