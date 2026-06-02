@@ -63,7 +63,7 @@ class NutritionSummaryCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   const Text(
-                    'ເປົ້າໝາຍໂພຊະນາການວັນນີ້',
+                    'ເປົ້າໝາຍໂພຊະນາການມື້ນີ້',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

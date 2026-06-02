@@ -32,7 +32,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('ສະຖິຕິ')),
+      appBar: AppBar(title: const Text('ສະຖິຕິ',style: TextStyle(fontFamily: 'HinsiewLAO'),)),
       body: BlocBuilder<WorkoutBloc, WorkoutState>(
         builder: (context, state) {
           if (state is! WorkoutLoaded || state.allWorkouts.isEmpty) {

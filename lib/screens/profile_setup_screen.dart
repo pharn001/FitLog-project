@@ -111,7 +111,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ'),
+          title: const Text('ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ',style: TextStyle(fontFamily: 'HinsiewLAO'),),
           elevation: 0,
         ),
         body: SafeArea(

@@ -50,7 +50,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ປະຫວັດການອອກກຳລັງກາຍ'),
+        title: const Text('ປະຫວັດການອອກກຳລັງກາຍ', style: TextStyle(fontFamily: 'HinsiewLAO'),),
       ),
       body: BlocBuilder<WorkoutBloc, WorkoutState>(
         builder: (context, state) {

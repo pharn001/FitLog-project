@@ -93,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('ຕັ້ງຄ່າ')),
+      appBar: AppBar(title: const Text('ຕັ້ງຄ່າ', style: TextStyle(fontFamily: 'HinsiewLAO'),)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -143,7 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           hasProfile ? Icons.edit_note : Icons.add_moderator,
                           size: 18,
                         ),
-                        label: Text(hasProfile ? 'ແກ້ໄຂຂໍ້ມູນຮ່າງກາຍ' : 'ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ'),
+                        label: Text(hasProfile ? 'ແກ້ໄຂຂໍ້ມູນຮ່າງກາຍ' : 'ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ',style: TextStyle(fontFamily: 'HinsiewLAO'),),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary.withValues(alpha: 0.15),
                           foregroundColor: AppColors.primary,
