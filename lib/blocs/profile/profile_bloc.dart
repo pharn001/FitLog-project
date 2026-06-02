@@ -14,9 +14,7 @@ import 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final Isar? _isar;
 
-  ProfileBloc({Isar? isar})
-      : _isar = isar,
-        super(const ProfileInitial()) {
+  ProfileBloc({Isar? isar}) : _isar = isar, super(const ProfileInitial()) {
     on<LoadProfile>(_onLoadProfile);
     on<SaveProfile>(_onSaveProfile);
   }
