@@ -503,7 +503,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             _buildSelectionCard(
               value: 'light',
               title: 'ຂະຫຍັບຕົວໜ້ອຍ',
-              desc: 'ອອກກຳລັງກາຍເບົາໆ 1-3 ວັນ/ສັບປະດາ',
+              desc: 'ອອກກຳລັງກາຍເບົາໆ 1-3 ວັນ/ອາທິດ',
               icon: Icons.directions_walk,
               isSelected: _activityLevel == 'light',
             ),
@@ -511,7 +511,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             _buildSelectionCard(
               value: 'moderate',
               title: 'ອອກກຳລັງກາຍປານກາງ',
-              desc: 'ອອກກຳລັງກາຍປານກາງ 3-5 ວັນ/ສັບປະດາ',
+              desc: 'ອອກກຳລັງກາຍປານກາງ 3-5 ວັນ/ອາທິດ',
               icon: Icons.fitness_center,
               isSelected: _activityLevel == 'moderate',
             ),
@@ -519,7 +519,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             _buildSelectionCard(
               value: 'active',
               title: 'ອອກກຳລັງກາຍໜັກ',
-              desc: 'ອອກກຳລັງກາຍໜັກ 6-7 ວັນ/ສັບປະດາ',
+              desc: 'ອອກກຳລັງກາຍໜັກ 6-7 ວັນ/ອາທິດ',
               icon: Icons.run_circle_outlined,
               isSelected: _activityLevel == 'active',
             ),

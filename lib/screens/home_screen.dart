@@ -73,7 +73,7 @@ class _HomeBody extends StatelessWidget {
         children: [
           // ── Greeting ───────────────────────────────────────────────
           Text(
-            'Welcome back! 💪',
+            'ຍິນດີຕ້ອນຮັບກັບຄືນ! 💪',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isDark ? AppColors.primaryLight : AppColors.primaryDark,
@@ -81,7 +81,7 @@ class _HomeBody extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Here\'s your workout summary',
+            'ນີ້ແມ່ນສະຫຼຸບການອອກກຳລັງກາຍຂອງທ່ານ',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
@@ -124,7 +124,7 @@ class _HomeBody extends StatelessWidget {
               Expanded(
                 child: StatCard(
                   icon: Icons.fitness_center,
-                  label: 'Total Workouts',
+                  label: 'ການອອກກຳລັງກາຍທັງໝົດ',
                   value: '${state.totalWorkouts}',
                   gradient: const LinearGradient(
                     colors: AppColors.tealGradient,
@@ -137,7 +137,7 @@ class _HomeBody extends StatelessWidget {
               Expanded(
                 child: StatCard(
                   icon: Icons.local_fire_department,
-                  label: 'Calories Burned',
+                  label: 'ເຜົາຜານແຄລໍຣີ',
                   value: '${state.totalCalories} kcal',
                   gradient: const LinearGradient(
                     colors: AppColors.orangeGradient,
@@ -151,8 +151,8 @@ class _HomeBody extends StatelessWidget {
           const SizedBox(height: 14),
           StatCard(
             icon: Icons.timer,
-            label: 'Total Minutes',
-            value: '${state.totalMinutes} min',
+            label: 'ເວລາທັງໝົດ',
+            value: '${state.totalMinutes} ນາທີ',
             gradient: const LinearGradient(
               colors: AppColors.indigoGradient,
               begin: Alignment.topLeft,
@@ -167,7 +167,7 @@ class _HomeBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Recent Workouts',
+                'ການອອກກຳລັງກາຍຫຼ້າສຸດ',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

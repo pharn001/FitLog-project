@@ -113,7 +113,7 @@ class NutritionSummaryCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildMacroColumn(
-                  label: 'Protein (30%)',
+                  label: 'ໂປຣຕີນ (30%)',
                   value: profile.proteinGrams,
                   color: Colors.red.shade400,
                   icon: Icons.egg_alt_outlined,
@@ -123,7 +123,7 @@ class NutritionSummaryCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: _buildMacroColumn(
-                  label: 'Carbs (40%)',
+                  label: 'ຄາໂບໄຮເດຣດ (40%)',
                   value: profile.carbsGrams,
                   color: Colors.amber.shade700,
                   icon: Icons.rice_bowl_outlined,
@@ -133,7 +133,7 @@ class NutritionSummaryCard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: _buildMacroColumn(
-                  label: 'Fat (30%)',
+                  label: 'ໄຂມັນ (30%)',
                   value: profile.fatGrams,
                   color: Colors.orange.shade700,
                   icon: Icons.opacity_outlined,
@@ -155,7 +155,7 @@ class NutritionSummaryCard extends StatelessWidget {
       label = 'ຫຼຸດນ້ຳໜັກ';
       color = Colors.blue.shade600;
     } else if (goal == 'gain') {
-      label = 'ເພີ່ມກ້າມຊີ້ນ';
+      label = 'ເພີ່ມກ້າມ';
       color = Colors.purple.shade600;
     }
 

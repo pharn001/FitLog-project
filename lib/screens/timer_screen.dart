@@ -24,7 +24,7 @@ class TimerScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout Timer'),
+        title: const Text('ເຄື່ອງຈັບເວລາອອກກຳລັງກາຍ'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
@@ -99,7 +99,7 @@ class TimerScreen extends StatelessWidget {
                     if (!state.isInitial)
                       _ControlButton(
                         icon: Icons.stop,
-                        label: 'Reset',
+                        label: 'ເລີ່ມໃໝ່',
                         color: Colors.red.shade400,
                         onPressed: () =>
                             context.read<TimerBloc>().add(const ResetTimer()),
@@ -113,10 +113,10 @@ class TimerScreen extends StatelessWidget {
                           ? Icons.pause
                           : Icons.play_arrow,
                       label: state.isRunning
-                          ? 'Pause'
+                          ? 'ຢຸດ'
                           : state.isPaused
-                              ? 'Resume'
-                              : 'Start',
+                              ? 'ເຮັດຕໍ່'
+                              : 'ເລີ່ມ',
                       color: state.isRunning
                           ? Colors.orange.shade600
                           : AppColors.primary,

@@ -33,16 +33,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
 
   final List<_GoalItem> _goals = [
-    _GoalItem(icon: Icons.directions_run, title: 'Running', target: '5 km / day'),
+    _GoalItem(icon: Icons.directions_run, title: 'ແລ່ນ', target: '5 ກມ / ວັນ'),
     _GoalItem(
         icon: Icons.fitness_center,
-        title: 'Strength',
-        target: '3 sessions / week'),
+        title: 'ຍົກນ້ຳໜັກ',
+        target: '3 ຄັ້ງ / ອາທິດ'),
     _GoalItem(
         icon: Icons.local_fire_department,
-        title: 'Calories',
-        target: '500 kcal / day'),
-    _GoalItem(icon: Icons.timer, title: 'Duration', target: '45 min / session'),
+        title: 'ແຄລໍຣີ',
+        target: '500 kcal / ວັນ'),
+    _GoalItem(icon: Icons.timer, title: 'ໄລຍະເວລາ', target: '45 ນາທີ / ຄັ້ງ'),
   ];
 
   void _showDailyGoalDialog(BuildContext context, int currentGoal) {
@@ -93,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: const Text('ຕັ້ງຄ່າ')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -198,7 +198,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             // ── Workout Goals Grid ───────────────────────────────
             Text(
-              'Workout Goals',
+              'ເປົ້າໝາຍການອອກກຳລັງກາຍ',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
@@ -255,7 +255,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             // ── Preferences ──────────────────────────────────────
             Text(
-              'Preferences',
+              'ການຕັ້ງຄ່າທົ່ວໄປ',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
@@ -268,8 +268,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               builder: (context, themeState) {
                 return Card(
                   child: SwitchListTile(
-                    title: const Text('Dark Mode'),
-                    subtitle: const Text('Use dark theme'),
+                    title: const Text('ໂໝດມືດ'),
+                    subtitle: const Text('ໃຊ້ທິມສີມືດ'),
                     secondary: Icon(
                       themeState.isDark ? Icons.dark_mode : Icons.light_mode,
                       color:
@@ -289,8 +289,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             // Notification toggle
             Card(
               child: SwitchListTile(
-                title: const Text('Push Notifications'),
-                subtitle: const Text('Receive workout reminders'),
+                title: const Text('ການແຈ້ງເຕືອນ'),
+                subtitle: const Text('ຮັບການແຈ້ງເຕືອນເຕືອນການອອກກຳລັງກາຍ'),
                 secondary: Icon(
                   _notificationsEnabled
                       ? Icons.notifications_active

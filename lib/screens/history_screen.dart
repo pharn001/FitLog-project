@@ -15,6 +15,7 @@ import '../blocs/streak/streak_event.dart';
 import '../router/app_router.dart';
 import '../theme/app_colors.dart';
 import '../widgets/workout_card.dart';
+import '../utils/translation_helper.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -49,7 +50,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout History'),
+        title: const Text('ປະຫວັດການອອກກຳລັງກາຍ'),
       ),
       body: BlocBuilder<WorkoutBloc, WorkoutState>(
         builder: (context, state) {
@@ -70,7 +71,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Search workouts…',
+                      hintText: 'ຄົ້ນຫາການອອກກຳລັງກາຍ...',
                       prefixIcon: Icon(Icons.search,
                           color: isDark
                               ? AppColors.primaryLight
@@ -127,7 +128,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         (type) => Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: FilterChip(
-                            label: Text(type),
+                            label: Text(translateWorkoutType(type)),
                             selected: state.activeFilter == type,
                             onSelected: (_) => context
                                 .read<WorkoutBloc>()

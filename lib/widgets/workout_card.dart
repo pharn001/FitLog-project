@@ -42,7 +42,7 @@ class WorkoutCard extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
-          '${workout.formattedDate}  •  ${workout.duration} min',
+          '${workout.formattedDate}  •  ${workout.duration} ນາທີ',
           style: TextStyle(
             color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
             fontSize: 13,

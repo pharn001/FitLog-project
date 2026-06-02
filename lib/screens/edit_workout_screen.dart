@@ -14,6 +14,7 @@ import '../blocs/streak/streak_bloc.dart';
 import '../blocs/streak/streak_event.dart';
 import '../models/workout.dart';
 import '../theme/app_colors.dart';
+import '../utils/translation_helper.dart';
 
 class EditWorkoutScreen extends StatefulWidget {
   final int workoutId;
@@ -121,7 +122,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
       builder: (context, state) {
         if (state is! WorkoutLoaded) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Edit Workout')),
+            appBar: AppBar(title: const Text('ແກ້ໄຂການອອກກຳລັງກາຍ')),
             body: const Center(child: CircularProgressIndicator()),
           );
         }
@@ -132,8 +133,8 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
 
         if (workout == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Edit Workout')),
-            body: const Center(child: Text('Workout not found')),
+            appBar: AppBar(title: const Text('ແກ້ໄຂການອອກກຳລັງກາຍ')),
+            body: const Center(child: Text('ບໍ່ພົບຂໍ້ມູນການອອກກຳລັງກາຍ')),
           );
         }
 
@@ -141,7 +142,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Edit Workout'),
+            title: const Text('ແກ້ໄຂການອອກກຳລັງກາຍ'),
             leading: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () => context.pop(),
@@ -169,7 +170,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                         SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Edit workout details',
+                            'ແກ້ໄຂລາຍລະອຽດການອອກກຳລັງກາຍ',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -186,12 +187,12 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(
-                      labelText: 'Workout Name',
+                      labelText: 'ຊື່ການອອກກຳລັງກາຍ',
                       prefixIcon: Icon(Icons.fitness_center),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please enter a workout name';
+                        return 'ກະລຸນາປ້ອນຊື່ການອອກກຳລັງກາຍ';
                       }
                       return null;
                     },
@@ -202,7 +203,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                   DropdownButtonFormField<String>(
                     initialValue: _selectedType,
                     decoration: const InputDecoration(
-                      labelText: 'Workout Type',
+                      labelText: 'ປະເພດການອອກກຳລັງກາຍ',
                       prefixIcon: Icon(Icons.category),
                     ),
                     items: _workoutTypes
@@ -214,7 +215,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                                       size: 20,
                                       color: AppColors.colorForType(type)),
                                   const SizedBox(width: 10),
-                                  Text(type),
+                                  Text(translateWorkoutType(type)),
                                 ],
                               ),
                             ))
@@ -235,15 +236,15 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                           controller: _durationController,
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'Duration (min)',
+                            labelText: 'ໄລຍະເວລາ (ນາທີ)',
                             prefixIcon: Icon(Icons.timer),
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Required';
+                              return 'ກະລຸນາປ້ອນຂໍ້ມູນ';
                             }
                             if (int.tryParse(value.trim()) == null) {
-                              return 'Enter a number';
+                              return 'ກະລຸນາປ້ອນຕົວເລກ';
                             }
                             return null;
                           },
@@ -255,15 +256,15 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                           controller: _caloriesController,
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'Calories',
+                            labelText: 'ແຄລໍຣີ (kcal)',
                             prefixIcon: Icon(Icons.local_fire_department),
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Required';
+                              return 'ກະລຸນາປ້ອນຂໍ້ມູນ';
                             }
                             if (int.tryParse(value.trim()) == null) {
-                              return 'Enter a number';
+                              return 'ກະລຸນາປ້ອນຕົວເລກ';
                             }
                             return null;
                           },
@@ -278,13 +279,13 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                     controller: _dateController,
                     readOnly: true,
                     decoration: const InputDecoration(
-                      labelText: 'Date',
+                      labelText: 'ວັນທີ',
                       prefixIcon: Icon(Icons.calendar_today),
                     ),
                     onTap: _pickDate,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please select a date';
+                        return 'ກະລຸນາເລືອກວັນທີ';
                       }
                       return null;
                     },
@@ -296,7 +297,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                     controller: _notesController,
                     maxLines: 3,
                     decoration: const InputDecoration(
-                      labelText: 'Notes (optional)',
+                      labelText: 'ໝາຍເຫດ (ເລືອກໄດ້)',
                       prefixIcon: Padding(
                         padding: EdgeInsets.only(bottom: 48),
                         child: Icon(Icons.notes),
@@ -311,7 +312,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                     child: ElevatedButton.icon(
                       onPressed: () => _save(workout),
                       icon: const Icon(Icons.check),
-                      label: const Text('Update Workout'),
+                      label: const Text('ອັບເດດການອອກກຳລັງກາຍ'),
                     ),
                   ),
                 ],

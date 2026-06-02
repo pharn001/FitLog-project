@@ -15,6 +15,7 @@ import '../blocs/streak/streak_event.dart';
 import '../models/workout.dart';
 import '../router/app_router.dart';
 import '../theme/app_colors.dart';
+import '../utils/translation_helper.dart';
 
 class DetailScreen extends StatelessWidget {
   final int workoutId;
@@ -27,7 +28,7 @@ class DetailScreen extends StatelessWidget {
       builder: (context, state) {
         if (state is! WorkoutLoaded) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Workout Detail')),
+            appBar: AppBar(title: const Text('ລາຍລະອຽດການອອກກຳລັງກາຍ')),
             body: const Center(child: CircularProgressIndicator()),
           );
         }
@@ -38,8 +39,8 @@ class DetailScreen extends StatelessWidget {
 
         if (workout == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Workout Detail')),
-            body: const Center(child: Text('Workout not found')),
+            appBar: AppBar(title: const Text('ລາຍລະອຽດການອອກກຳລັງກາຍ')),
+            body: const Center(child: Text('ບໍ່ພົບຂໍ້ມູນການອອກກຳລັງກາຍ')),
           );
         }
 
@@ -93,7 +94,7 @@ class _DetailBody extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout Detail'),
+        title: const Text('ລາຍລະອຽດການອອກກຳລັງກາຍ'),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
@@ -166,7 +167,7 @@ class _DetailBody extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            workout.type,
+                            translateWorkoutType(workout.type),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 13,
@@ -192,8 +193,8 @@ class _DetailBody extends StatelessWidget {
                       Expanded(
                         child: _QuickStatCard(
                           icon: Icons.timer,
-                          label: 'Duration',
-                          value: '${workout.duration} min',
+                          label: 'ໄລຍະເວລາ',
+                          value: '${workout.duration} ນາທີ',
                           color: Colors.indigo,
                         ),
                       ),
@@ -201,7 +202,7 @@ class _DetailBody extends StatelessWidget {
                       Expanded(
                         child: _QuickStatCard(
                           icon: Icons.local_fire_department,
-                          label: 'Calories',
+                          label: 'ແຄລໍຣີ',
                           value: '${workout.calories} kcal',
                           color: Colors.orange,
                         ),
@@ -211,14 +212,14 @@ class _DetailBody extends StatelessWidget {
                   const SizedBox(height: 16),
                   _DetailRow(
                     icon: Icons.calendar_today,
-                    label: 'Date',
+                    label: 'ວັນທີ',
                     value: workout.formattedDate,
                   ),
                   const SizedBox(height: 12),
                   _DetailRow(
                     icon: Icons.notes,
-                    label: 'Notes',
-                    value: workout.notes ?? 'No notes for this workout.',
+                    label: 'ໝາຍເຫດ',
+                    value: workout.notes ?? 'ບໍ່ມີໝາຍເຫດສຳລັບການອອກກຳລັງກາຍນີ້.',
                   ),
                   const SizedBox(height: 32),
                 ],

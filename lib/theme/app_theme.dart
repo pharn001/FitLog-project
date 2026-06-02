@@ -40,7 +40,6 @@ class AppTheme {
         titleTextStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          letterSpacing: 1.0,
           color: Colors.white,
         ),
       ),
@@ -145,7 +144,6 @@ class AppTheme {
         titleTextStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          letterSpacing: 1.0,
           color: Colors.white,
         ),
       ),

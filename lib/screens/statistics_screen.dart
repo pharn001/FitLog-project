@@ -15,6 +15,7 @@ import '../blocs/workout/workout_state.dart';
 import '../models/workout.dart';
 import '../theme/app_colors.dart';
 import '../widgets/stat_card.dart';
+import '../utils/translation_helper.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -31,7 +32,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistics')),
+      appBar: AppBar(title: const Text('ສະຖິຕິ')),
       body: BlocBuilder<WorkoutBloc, WorkoutState>(
         builder: (context, state) {
           if (state is! WorkoutLoaded || state.allWorkouts.isEmpty) {
@@ -108,7 +109,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     Expanded(
                       child: StatCard(
                         icon: Icons.fitness_center,
-                        label: 'Workouts',
+                        label: 'ການອອກກຳລັງກາຍ',
                         value: '${filtered.length}',
                         gradient: const LinearGradient(
                           colors: AppColors.tealGradient,
@@ -119,7 +120,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     Expanded(
                       child: StatCard(
                         icon: Icons.local_fire_department,
-                        label: 'Avg Calories',
+                        label: 'ແຄລໍຣີສະເລ່ຍ',
                         value: '$avgCals kcal',
                         gradient: const LinearGradient(
                           colors: AppColors.orangeGradient,
@@ -131,8 +132,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 const SizedBox(height: 12),
                 StatCard(
                   icon: Icons.timer,
-                  label: 'Total Time',
-                  value: '$totalMins min',
+                  label: 'ເວລາທັງໝົດ',
+                  value: '$totalMins ນາທີ',
                   gradient: const LinearGradient(
                     colors: AppColors.indigoGradient,
                   ),
@@ -272,7 +273,7 @@ class _CaloriesBarChart extends StatelessWidget {
 
     final maxY = dailyCals.values.fold<int>(0, (a, b) => a > b ? a : b);
 
-    final weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final weekDays = ['ອາ.', 'ຈ.', 'ອ.', 'ພ.', 'ພຫ.', 'ສຸ.', 'ສ.'];
 
     return BarChart(
       BarChartData(
@@ -368,7 +369,7 @@ class _TypePieChart extends StatelessWidget {
     }
 
     if (typeCounts.isEmpty) {
-      return const Center(child: Text('No data'));
+      return const Center(child: Text('ບໍ່ມີຂໍ້ມູນ'));
     }
 
     final total = workouts.length;
@@ -424,7 +425,7 @@ class _TypePieChart extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${e.key} (${e.value})',
+                        '${translateWorkoutType(e.key)} (${e.value})',
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark

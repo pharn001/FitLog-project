@@ -15,6 +15,7 @@ import '../blocs/streak/streak_event.dart';
 import '../models/workout.dart';
 import '../router/app_router.dart';
 import '../theme/app_colors.dart';
+import '../utils/translation_helper.dart';
 
 class AddWorkoutScreen extends StatefulWidget {
   final int? initialDuration;
@@ -118,7 +119,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Workout'),
+        title: const Text('ເພີ່ມການອອກກຳລັງກາຍ'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
@@ -127,7 +128,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
           // Timer shortcut
           IconButton(
             icon: const Icon(Icons.timer),
-            tooltip: 'Workout Timer',
+            tooltip: 'ເຄື່ອງຈັບເວລາອອກກຳລັງກາຍ',
             onPressed: () => context.push(AppRoutes.timer),
           ),
         ],
@@ -155,7 +156,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Log a new workout session',
+                        'ບັນທຶກການອອກກຳລັງກາຍໃໝ່',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -172,13 +173,13 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Workout Name',
-                  hintText: 'e.g. Morning Run',
+                  labelText: 'ຊື່ການອອກກຳລັງກາຍ',
+                  hintText: 'ຕົວຢ່າງ: ແລ່ນຕອນເຊົ້າ',
                   prefixIcon: Icon(Icons.fitness_center),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter a workout name';
+                    return 'ກະລຸນາປ້ອນຊື່ການອອກກຳລັງກາຍ';
                   }
                   return null;
                 },
@@ -189,7 +190,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
               DropdownButtonFormField<String>(
                 initialValue: _selectedType,
                 decoration: const InputDecoration(
-                  labelText: 'Workout Type',
+                  labelText: 'ປະເພດການອອກກຳລັງກາຍ',
                   prefixIcon: Icon(Icons.category),
                 ),
                 items: _workoutTypes
@@ -201,7 +202,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                                   size: 20,
                                   color: AppColors.colorForType(type)),
                               const SizedBox(width: 10),
-                              Text(type),
+                              Text(translateWorkoutType(type)),
                             ],
                           ),
                         ))
@@ -222,15 +223,15 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                       controller: _durationController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Duration (min)',
+                        labelText: 'ໄລຍະເວລາ (ນາທີ)',
                         prefixIcon: Icon(Icons.timer),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Required';
+                          return 'ກະລຸນາປ້ອນຂໍ້ມູນ';
                         }
                         if (int.tryParse(value.trim()) == null) {
-                          return 'Enter a number';
+                          return 'ກະລຸນາປ້ອນຕົວເລກ';
                         }
                         return null;
                       },
@@ -242,15 +243,15 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                       controller: _caloriesController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                        labelText: 'Calories',
+                        labelText: 'ແຄລໍຣີ (kcal)',
                         prefixIcon: Icon(Icons.local_fire_department),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Required';
+                          return 'ກະລຸນາປ້ອນຂໍ້ມູນ';
                         }
                         if (int.tryParse(value.trim()) == null) {
-                          return 'Enter a number';
+                          return 'ກະລຸນາປ້ອນຕົວເລກ';
                         }
                         return null;
                       },
@@ -265,14 +266,14 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                 controller: _dateController,
                 readOnly: true,
                 decoration: const InputDecoration(
-                  labelText: 'Date',
+                  labelText: 'ວັນທີ',
                   hintText: 'YYYY-MM-DD',
                   prefixIcon: Icon(Icons.calendar_today),
                 ),
                 onTap: _pickDate,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please select a date';
+                    return 'ກະລຸນາເລືອກວັນທີ';
                   }
                   return null;
                 },
@@ -284,8 +285,8 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                 controller: _notesController,
                 maxLines: 3,
                 decoration: const InputDecoration(
-                  labelText: 'Notes (optional)',
-                  hintText: 'Any additional info…',
+                  labelText: 'ໝາຍເຫດ (ເລືອກໄດ້)',
+                  hintText: 'ຂໍ້ມູນເພີ່ມເຕີມ...',
                   prefixIcon: Padding(
                     padding: EdgeInsets.only(bottom: 48),
                     child: Icon(Icons.notes),
@@ -300,7 +301,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _save,
                   icon: const Icon(Icons.save),
-                  label: const Text('Save Workout'),
+                  label: const Text('ບັນທຶກການອອກກຳລັງກາຍ'),
                 ),
               ),
             ],
