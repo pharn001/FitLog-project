@@ -37,6 +37,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
@@ -59,4 +60,14 @@ flutter:
         - asset: assets/fonts/Hinsiew-SemiBold.otf
         - asset: assets/fonts/Hinsiew-SemiBold.otf
           weight: 700
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path_ios: "assets/image/logo_ios.png"
+  image_path_android: "assets/image/logo_android_legacy.png"
+  adaptive_icon_background: "assets/image/logo_android_background.png"
+  adaptive_icon_foreground: "assets/image/logo_android_foreground.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
   
