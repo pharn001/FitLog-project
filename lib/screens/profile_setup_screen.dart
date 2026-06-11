@@ -73,15 +73,15 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   void _saveProfile() {
     context.read<ProfileBloc>().add(
-          SaveProfile(
-            gender: _gender,
-            weight: _weight,
-            height: _height,
-            age: _age,
-            activityLevel: _activityLevel,
-            goal: _goal,
-          ),
-        );
+      SaveProfile(
+        gender: _gender,
+        weight: _weight,
+        height: _height,
+        age: _age,
+        activityLevel: _activityLevel,
+        goal: _goal,
+      ),
+    );
   }
 
   @override
@@ -111,7 +111,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ',style: TextStyle(fontFamily: 'HinsiewLAO'),),
+          title: const Text(
+            'ຕັ້ງຄ່າຂໍ້ມູນຮ່າງກາຍ',
+            style: TextStyle(fontFamily: 'HinsiewLAO'),
+          ),
           elevation: 0,
         ),
         body: SafeArea(
@@ -119,7 +122,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             children: [
               // Progress indicator
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 child: Column(
                   children: [
                     Row(
@@ -128,7 +134,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         Text(
                           'ຂັ້ນຕອນທີ ${_currentStep + 1} ຈາກ $_totalSteps',
                           style: TextStyle(
-                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade600,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -147,8 +155,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       child: LinearProgressIndicator(
                         value: (_currentStep + 1) / _totalSteps,
                         minHeight: 8,
-                        backgroundColor: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        backgroundColor: isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade200,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -205,7 +217,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                           ),
                           elevation: 2,
                         ),
-                        child: Text(_currentStep == _totalSteps - 1 ? 'ບັນທຶກສຳເລັດ' : 'ຕໍ່ໄປ'),
+                        child: Text(
+                          _currentStep == _totalSteps - 1
+                              ? 'ບັນທຶກສຳເລັດ'
+                              : 'ຕໍ່ໄປ',
+                        ),
                       ),
                     ),
                   ],
@@ -272,7 +288,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               : (isDark ? AppColors.darkCard : Colors.white),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: isSelected ? color : (isDark ? AppColors.darkDivider : Colors.grey.shade200),
+            color: isSelected
+                ? color
+                : (isDark ? AppColors.darkDivider : Colors.grey.shade200),
             width: 2.5,
           ),
           boxShadow: [
@@ -281,7 +299,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 color: color.withValues(alpha: 0.25),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
-              )
+              ),
           ],
         ),
         child: Column(
@@ -298,7 +316,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: isSelected ? color : (isDark ? Colors.white : Colors.black87),
+                color: isSelected
+                    ? color
+                    : (isDark ? Colors.white : Colors.black87),
               ),
             ),
           ],
@@ -311,7 +331,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   Widget _buildWeightHeightStep(bool isDark) {
     return _buildStepContainer(
       title: 'ນ້ຳໜັກ ແລະ ສ່ວນສູງ 📏',
-      subtitle: 'ໃຊ້ຄຳນວນດັດສະນີມວນກາຍ (BMI) ແລະ ປະລິມານພະລັງງານທີ່ຮ່າງກາຍຕ້ອງການ',
+      subtitle:
+          'ໃຊ້ຄຳນວນດັດສະນີມວນກາຍ (BMI) ແລະ ປະລິມານພະລັງງານທີ່ຮ່າງກາຍຕ້ອງການ',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -361,7 +382,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: isDark ? AppColors.darkDivider : Colors.grey.shade200),
+        border: Border.all(
+          color: isDark ? AppColors.darkDivider : Colors.grey.shade200,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,7 +394,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               RichText(
                 text: TextSpan(
@@ -388,7 +414,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       text: ' $unit',
                       style: TextStyle(
                         fontSize: 14,
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                       ),
                     ),
                   ],
@@ -422,7 +450,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkCard : Colors.white,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: isDark ? AppColors.darkDivider : Colors.grey.shade200),
+            border: Border.all(
+              color: isDark ? AppColors.darkDivider : Colors.grey.shade200,
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -437,7 +467,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               ),
               const Text(
                 'ປີ (Years)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey,
+                ),
               ),
               const SizedBox(height: 20),
               Row(
@@ -468,7 +502,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     );
   }
 
-  Widget _buildRoundButton({required IconData icon, required VoidCallback onPressed}) {
+  Widget _buildRoundButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onPressed,
@@ -547,7 +584,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           _buildSelectionCard(
             value: 'lose',
             title: 'ຫຼຸດນ້ຳໜັກ (Lose Weight)',
-            desc: 'ທານໜ້ອຍກວ່າຄ່າເຜົາຜານ 500 kcal ເພື່ອດຶງໄຂມັນມາໃຊ້',
+            desc: 'ກິນໜ້ອຍກວ່າຄ່າເຜົາຜານ 500 kcal ເພື່ອດຶງໄຂມັນມາໃຊ້',
             icon: Icons.trending_down,
             isSelected: _goal == 'lose',
           ),
@@ -555,7 +592,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           _buildSelectionCard(
             value: 'maintain',
             title: 'ຮັກສາສົມດຸນ (Maintain Weight)',
-            desc: 'ທານເທົ່າຄ່າເຜົາຜານ TDEE ເພື່ອຮັກສານ້ຳໜັກ ແລະ ສຸຂະພາບ',
+            desc: 'ກິນເທົ່າຄ່າເຜົາຜານ TDEE ເພື່ອຮັກສານ້ຳໜັກ ແລະ ສຸຂະພາບ',
             icon: Icons.balance,
             isSelected: _goal == 'maintain',
           ),
@@ -563,7 +600,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           _buildSelectionCard(
             value: 'gain',
             title: 'ເພີ່ມກ້າມຊີ້ນ / ນ້ຳໜັກ (Gain Muscle)',
-            desc: 'ທານຫຼາຍກວ່າຄ່າເຜົາຜານ 300 kcal ຄວບຄູ່ກັບເວດເທຣນນິງ',
+            desc: 'ກິນຫຼາຍກວ່າຄ່າເຜົາຜານ 300 kcal ຄວບຄູ່ກັບເວດເທຣນນິງ',
             icon: Icons.trending_up,
             isSelected: _goal == 'gain',
           ),
@@ -599,7 +636,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               : (isDark ? AppColors.darkCard : Colors.white),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppColors.primary : (isDark ? AppColors.darkDivider : Colors.grey.shade200),
+            color: isSelected
+                ? AppColors.primary
+                : (isDark ? AppColors.darkDivider : Colors.grey.shade200),
             width: 2,
           ),
         ),
@@ -608,7 +647,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : Colors.grey.shade300.withValues(alpha: 0.3),
+                color: isSelected
+                    ? AppColors.primary
+                    : Colors.grey.shade300.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -624,24 +665,26 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     desc,
                     style: TextStyle(
                       fontSize: 12,
-                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
                     ),
                   ),
                 ],
               ),
             ),
             if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.primary,
-              ),
+              const Icon(Icons.check_circle, color: AppColors.primary),
           ],
         ),
       ),
